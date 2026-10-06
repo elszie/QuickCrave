@@ -1,0 +1,2380 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="QuickCrave — fresh food, delivered fast. Rice meals, burgers, fries and juices with cash on delivery, GCash or Maya." />
+  <title>QuickCrave — Our Menu</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23e8a653'/%3E%3Ctext x='32' y='45' font-family='Inter,sans-serif' font-size='36' font-weight='800' text-anchor='middle' fill='%23202020'%3EQ%3C/text%3E%3C/svg%3E" />
+
+  <!-- Open Graph. Add your own 1200x630 image and point og:image at it before launch. -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="QuickCrave — fresh food, delivered fast" />
+  <meta property="og:description" content="Rice meals, burgers, fries and juices delivered hot. Flat ₱39 delivery." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================================
+       Design tokens — unchanged from the QuickCrave menu design.
+       Every page in this file reuses these tokens and class names.
+       ========================================================================== */
+    :root {
+      --canvas: #f5f5f5;
+      --paper: #ffffff;
+      --sidebar: #f8e6c4;
+      --accent: #e8a653;
+      --accent-dark: #d6852c;
+      --accent-soft: #fff1d5;
+      --ink: #202020;
+      --muted: #77736d;
+      --line: #ece8e0;
+      --shadow: 0 10px 24px rgba(54, 38, 18, .07);
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --radius-sm: 10px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--canvas);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    button, input { font: inherit; }
+    button { border: 0; cursor: pointer; }
+    img { display: block; max-width: 100%; }
+
+    .app-shell { min-height: 100vh; display: flex; }
+    .sidebar {
+      position: sticky; top: 0; z-index: 10; width: 238px; height: 100vh;
+      flex: 0 0 238px; padding: 34px 20px 22px; background: var(--sidebar);
+      display: flex; flex-direction: column;
+    }
+    .brand { color: var(--accent-dark); font-size: 20px; font-weight: 850; letter-spacing: -.7px; margin: 0 0 38px 8px; }
+    .brand span { color: var(--ink); }
+    .nav-label { color: #9c8b72; font-size: 10px; text-transform: uppercase; letter-spacing: .12em; font-weight: 800; margin: 0 0 11px 12px; }
+    .nav { display: grid; gap: 5px; }
+    .nav button, .profile-button {
+      display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 13px;
+      color: #4d453b; background: transparent; border-radius: 13px; text-align: left; font-size: 12px;
+      transition: background .2s, color .2s, transform .2s;
+    }
+    .nav button:hover, .nav button.active { color: #fff; background: var(--accent); }
+    .nav button:hover { transform: translateX(2px); }
+    .nav-icon { width: 18px; text-align: center; font-size: 14px; opacity: .82; }
+    .profile { margin-top: auto; border-top: 1px solid rgba(120, 85, 38, .12); padding-top: 20px; }
+    .profile-button { padding: 8px 10px; }
+    .avatar { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 50%; background: #e9bd7d; font-size: 14px; }
+    .profile-copy { display: grid; gap: 2px; }
+    .profile-copy strong { font-size: 12px; }
+    .profile-copy small { color: #9a896f; font-size: 10px; }
+    .logout { width: 100%; margin-top: 13px; padding: 11px; border-radius: 11px; color: #6d4a21; background: rgba(255,255,255,.46); font-size: 11px; font-weight: 750; }
+
+    .main { width: min(100%, 1120px); margin: 0 auto; padding: 38px 42px 60px; }
+    .topbar { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 28px; }
+    .eyebrow { color: var(--accent-dark); font-size: 12px; font-weight: 800; margin: 0 0 5px; }
+    h1 { margin: 0; font-size: clamp(28px, 3vw, 37px); line-height: 1; letter-spacing: -1.5px; }
+    .top-actions { display: flex; align-items: center; gap: 12px; }
+    .search-wrap { position: relative; }
+    .search-wrap span { position: absolute; left: 13px; top: 10px; color: #a3a09b; font-size: 14px; }
+    .search { width: min(250px, 30vw); border: 1px solid transparent; outline: 0; border-radius: 12px; padding: 10px 13px 10px 35px; background: #ececeb; color: var(--ink); font-size: 11px; transition: border .2s, background .2s; }
+    .search:focus { border-color: var(--accent); background: #fff; }
+    .cart-button { position: relative; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; color: #fff; background: var(--accent); font-size: 17px; box-shadow: 0 6px 12px rgba(213, 133, 44, .22); }
+    .cart-count { position: absolute; top: -5px; right: -5px; min-width: 18px; height: 18px; display: grid; place-items: center; border: 2px solid var(--canvas); border-radius: 50%; color: #fff; background: var(--ink); font-size: 9px; font-weight: 800; }
+
+    .toolbar { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 22px; }
+    .subcopy { color: var(--muted); font-size: 12px; margin: 0; }
+    .filters { display: flex; gap: 7px; flex-wrap: wrap; }
+    .filter { padding: 8px 12px; border-radius: 10px; color: #78746e; background: transparent; font-size: 10px; font-weight: 750; }
+    .filter:hover, .filter.active { color: #5c3a18; background: var(--accent-soft); }
+
+    .menu-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+    .card { min-width: 0; padding: 8px 8px 12px; border: 1px solid rgba(255,255,255,.8); border-radius: var(--radius-md); background: var(--paper); box-shadow: var(--shadow); transition: transform .2s, box-shadow .2s; }
+    .card:hover { transform: translateY(-3px); box-shadow: 0 15px 28px rgba(54, 38, 18, .11); }
+    .food-art { position: relative; height: 118px; overflow: hidden; border-radius: 11px; background: var(--accent-soft); }
+    .food-art img { width: 100%; height: 100%; object-fit: cover; transition: transform .35s; }
+    .card:hover .food-art img { transform: scale(1.05); }
+    .tag { position: absolute; top: 7px; left: 7px; padding: 4px 7px; border-radius: 7px; color: #80551e; background: rgba(255,255,255,.8); font-size: 8px; font-weight: 800; }
+    .card-content { padding: 11px 3px 0; }
+    .card h3 { margin: 0 0 4px; font-size: 12px; letter-spacing: -.2px; }
+    .card p { display: -webkit-box; min-height: 28px; overflow: hidden; margin: 0 0 10px; color: var(--muted); font-size: 9px; line-height: 1.45; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+    .card-footer { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+    .price { color: #cb7021; font-size: 12px; font-weight: 850; }
+    .add { padding: 7px 10px; border-radius: 8px; color: #fff; background: var(--accent); font-size: 9px; font-weight: 800; transition: background .2s; }
+    .add:hover { background: var(--accent-dark); }
+    .empty { grid-column: 1 / -1; padding: 56px 20px; border: 1px dashed #ddc9a7; border-radius: var(--radius-md); color: var(--muted); text-align: center; }
+
+    .overlay { position: fixed; inset: 0; z-index: 20; display: none; background: rgba(29, 27, 23, .35); backdrop-filter: blur(3px); }
+    .overlay.open { display: block; }
+    .cart-drawer { position: absolute; top: 0; right: 0; width: min(400px, 100%); height: 100%; padding: 28px; overflow: auto; background: #fffdf9; box-shadow: -18px 0 40px rgba(0,0,0,.12); animation: slide-in .25s ease-out; }
+    @keyframes slide-in { from { transform: translateX(100%); } to { transform: translateX(0); } }
+    .drawer-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; }
+    .drawer-head h2 { margin: 0; font-size: 21px; letter-spacing: -.7px; }
+    .close { width: 32px; height: 32px; border-radius: 9px; color: #6d6962; background: #f3f0ea; font-size: 18px; }
+    .cart-items { display: grid; gap: 14px; }
+    .cart-line { display: grid; grid-template-columns: 52px 1fr auto; align-items: center; gap: 10px; padding-bottom: 14px; border-bottom: 1px solid var(--line); }
+    .cart-line img { width: 52px; height: 52px; object-fit: cover; border-radius: 10px; }
+    .cart-line strong { display: block; font-size: 11px; }
+    .cart-line small { display: block; margin-top: 3px; color: var(--muted); font-size: 9px; }
+    .quantity { display: flex; align-items: center; gap: 7px; margin-top: 7px; }
+    .quantity button { width: 20px; height: 20px; border-radius: 6px; color: #694718; background: var(--accent-soft); font-weight: 800; }
+    .quantity span { min-width: 10px; text-align: center; font-size: 10px; }
+    .line-total { align-self: start; color: var(--accent-dark); font-size: 11px; font-weight: 800; }
+    .cart-empty { padding: 36px 8px; color: var(--muted); text-align: center; font-size: 12px; }
+    .summary { margin-top: 26px; padding-top: 18px; border-top: 1px solid var(--line); }
+    .summary-row { display: flex; justify-content: space-between; margin: 8px 0; color: var(--muted); font-size: 12px; }
+    .summary-row.total { margin-top: 15px; color: var(--ink); font-size: 16px; font-weight: 850; }
+    .checkout { width: 100%; margin-top: 18px; padding: 14px; border-radius: 11px; color: #fff; background: var(--ink); font-size: 12px; font-weight: 800; }
+    .checkout:disabled { cursor: not-allowed; opacity: .4; }
+    .notice { display: none; margin-top: 12px; padding: 11px; border-radius: 10px; background: #eff8eb; color: #427338; font-size: 10px; line-height: 1.4; }
+    .notice.show { display: block; }
+    .mobile-menu { display: none; width: 38px; height: 38px; border-radius: 11px; color: var(--ink); background: var(--sidebar); }
+    .toast { position: fixed; z-index: 30; left: 50%; bottom: 22px; transform: translate(-50%, 20px); padding: 12px 16px; border-radius: 10px; color: #fff; background: var(--ink); box-shadow: var(--shadow); font-size: 11px; opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+    @media (max-width: 920px) {
+      .sidebar { width: 205px; flex-basis: 205px; }
+      .main { padding-inline: 26px; }
+      .menu-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+    @media (max-width: 700px) {
+      .sidebar { position: fixed; left: 0; transform: translateX(-100%); transition: transform .25s; box-shadow: 10px 0 24px rgba(0,0,0,.1); }
+      .sidebar.open { transform: translateX(0); }
+      .mobile-menu { display: block; }
+      .main { padding: 24px 16px 48px; }
+      .topbar { align-items: flex-start; }
+      .top-actions { gap: 8px; }
+      .search { width: 150px; }
+      .toolbar { align-items: flex-start; flex-direction: column-reverse; }
+      .filters { width: 100%; overflow-x: auto; flex-wrap: nowrap; padding-bottom: 2px; }
+      .filter { white-space: nowrap; }
+      .menu-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 11px; }
+      .food-art { height: 108px; }
+    }
+    @media (max-width: 420px) {
+      .eyebrow { font-size: 10px; }
+      h1 { font-size: 27px; }
+      .search-wrap { display: none; }
+      .card { padding: 6px 6px 10px; }
+      .food-art { height: 100px; }
+    }
+
+    /* ==========================================================================
+       Additional pages (Home, Checkout, Orders, Favorites, Addresses, Help,
+       Accounts, Owner screen). Same tokens, same visual language.
+       ========================================================================== */
+
+    .panel { padding: 20px; border: 1px solid rgba(255,255,255,.8); border-radius: var(--radius-md); background: var(--paper); box-shadow: var(--shadow); }
+    .panel + .panel, .panel + .section, .section + .panel { margin-top: 16px; }
+    .panel h2 { margin: 0 0 4px; font-size: 17px; letter-spacing: -.5px; }
+    .panel h3 { margin: 0 0 5px; font-size: 13px; letter-spacing: -.3px; }
+    .panel-note { margin: 0 0 16px; color: var(--muted); font-size: 10px; line-height: 1.6; }
+    .panel-note:last-child { margin-bottom: 0; }
+
+    .section { margin-top: 30px; }
+    .section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+    .section-head h2 { margin: 0; font-size: 16px; letter-spacing: -.6px; }
+    .link { color: var(--accent-dark); font-size: 10px; font-weight: 800; text-decoration: none; }
+    .link:hover { text-decoration: underline; }
+
+    .hero { position: relative; overflow: hidden; padding: 34px 32px; border-radius: var(--radius-lg); background: linear-gradient(135deg, var(--accent-soft), #ffffff 62%); box-shadow: var(--shadow); }
+    .hero h2 { margin: 0 0 9px; font-size: clamp(23px, 3vw, 33px); line-height: 1.06; letter-spacing: -1.4px; }
+    .hero p { max-width: 54ch; margin: 0 0 18px; color: #6f6a62; font-size: 12px; line-height: 1.65; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+    .hero-badge { display: inline-flex; align-items: center; gap: 7px; margin-bottom: 14px; padding: 6px 11px; border-radius: 999px; background: rgba(255,255,255,.78); color: #8a5a1c; font-size: 9px; font-weight: 800; }
+
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 11px 17px; border-radius: 11px; background: var(--accent); color: #fff; font-size: 11px; font-weight: 800; text-decoration: none; transition: background .2s, transform .2s; }
+    .btn:hover { background: var(--accent-dark); transform: translateY(-1px); }
+    .btn.ghost { background: var(--accent-soft); color: #5c3a18; }
+    .btn.ghost:hover { background: #ffe7bd; }
+    .btn.ink { background: var(--ink); }
+    .btn.ink:hover { background: #000; }
+    .btn.quiet { background: #f1efe9; color: #6d6962; }
+    .btn.quiet:hover { background: #e9e6dd; }
+    .btn.danger { background: #fdeceb; color: #a4372d; }
+    .btn.danger:hover { background: #fbdcd9; }
+    .btn:disabled { cursor: not-allowed; opacity: .45; transform: none; }
+    .btn.wide { width: 100%; }
+    .btn.small { padding: 7px 11px; border-radius: 9px; font-size: 9px; }
+
+    .steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .step { padding: 18px; border-radius: var(--radius-md); background: var(--paper); box-shadow: var(--shadow); }
+    .step-num { display: grid; place-items: center; width: 26px; height: 26px; margin-bottom: 11px; border-radius: 9px; background: var(--accent-soft); color: var(--accent-dark); font-size: 11px; font-weight: 900; }
+    .step h3 { margin: 0 0 5px; font-size: 12px; }
+    .step p { margin: 0; color: var(--muted); font-size: 10px; line-height: 1.6; }
+
+    .field { display: grid; gap: 6px; margin-bottom: 13px; }
+    .field > label { color: #9c8b72; font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: .11em; }
+    .input, .textarea { width: 100%; border: 1px solid var(--line); outline: 0; border-radius: 11px; padding: 11px 13px; background: #f7f5f1; color: var(--ink); font: inherit; font-size: 11px; transition: border .2s, background .2s; }
+    .input:focus, .textarea:focus { border-color: var(--accent); background: #fff; }
+    .textarea { min-height: 78px; resize: vertical; }
+    .field-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .field-error { color: #a4372d; font-size: 9px; }
+    .field-error:empty { display: none; }
+    .radio-row { display: flex; align-items: center; gap: 9px; font-size: 11px; }
+
+    .layout-2 { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+    .pay-options { display: grid; gap: 9px; }
+    .pay-option { display: flex; align-items: center; gap: 11px; padding: 13px; border: 1px solid var(--line); border-radius: 12px; background: #fbfaf7; font-size: 11px; font-weight: 700; cursor: pointer; transition: border .2s, background .2s; }
+    .pay-option input { accent-color: var(--accent-dark); }
+    .pay-option.active { border-color: var(--accent); background: var(--accent-soft); }
+    .pay-option small { display: block; margin-top: 3px; color: var(--muted); font-size: 9px; font-weight: 500; }
+
+    .summary-lines { display: grid; }
+    .line { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: 11px; }
+    .line:last-child { border-bottom: 0; }
+    .line strong { font-weight: 800; }
+    .line small { display: block; margin-top: 2px; color: var(--muted); font-size: 9px; }
+
+    .chip { display: inline-flex; align-items: center; padding: 4px 9px; border-radius: 999px; font-size: 9px; font-weight: 800; background: var(--accent-soft); color: #80551e; }
+    .chip-pending { background: #fdf1dc; color: #906318; }
+    .chip-confirmed { background: #eaf1fb; color: #3d6494; }
+    .chip-preparing { background: #fff1d5; color: #8a5a1c; }
+    .chip-out_for_delivery { background: #eee9fb; color: #5a4a9c; }
+    .chip-delivered { background: #eff8eb; color: #427338; }
+    .chip-cancelled { background: #fdeceb; color: #a4372d; }
+
+    .order-list { display: grid; gap: 14px; }
+    .order-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; margin-bottom: 10px; }
+    .order-head h3 { margin: 0 0 3px; font-size: 13px; }
+    .order-head p { margin: 0; color: var(--muted); font-size: 9px; }
+    .order-foot { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line); }
+    .order-foot strong { font-size: 14px; font-weight: 850; }
+    .order-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+
+    .timeline { margin: 0; padding: 0; list-style: none; }
+    .timeline li { position: relative; display: grid; grid-template-columns: 20px 1fr; gap: 12px; padding-bottom: 18px; }
+    .timeline li:last-child { padding-bottom: 0; }
+    .timeline li::before { content: ""; position: absolute; left: 9px; top: 20px; bottom: 0; width: 1px; background: var(--line); }
+    .timeline li:last-child::before { display: none; }
+    .timeline .dot { width: 20px; height: 20px; display: grid; place-items: center; border-radius: 50%; background: #f1efe9; color: #a09a91; font-size: 9px; font-weight: 900; }
+    .timeline .done .dot { background: var(--accent); color: #fff; }
+    .timeline .current .dot { background: var(--ink); color: #fff; }
+    .timeline h4 { margin: 2px 0 2px; font-size: 11px; }
+    .timeline p { margin: 0; color: var(--muted); font-size: 9px; }
+
+    .fav-toggle { position: absolute; top: 7px; right: 7px; display: grid; place-items: center; width: 26px; height: 26px; border-radius: 9px; background: rgba(255,255,255,.86); color: #a4372d; font-size: 13px; line-height: 1; }
+    .fav-toggle.on { background: var(--accent); color: #fff; }
+
+    .addr-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .addr-card { display: flex; flex-direction: column; gap: 7px; padding: 18px; border-radius: var(--radius-md); background: var(--paper); box-shadow: var(--shadow); }
+    .addr-card.default { outline: 2px solid var(--accent); outline-offset: -2px; }
+    .addr-card h3 { margin: 0; font-size: 12px; }
+    .addr-card p { margin: 0; color: var(--muted); font-size: 10px; line-height: 1.6; }
+    .addr-card .row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; padding-top: 12px; }
+
+    .faq { display: grid; gap: 10px; }
+    .faq details { padding: 15px 17px; border-radius: 12px; background: var(--paper); box-shadow: var(--shadow); }
+    .faq summary { cursor: pointer; font-size: 12px; font-weight: 750; list-style: none; }
+    .faq summary::-webkit-details-marker { display: none; }
+    .faq summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+    .faq details[open] summary { color: var(--accent-dark); }
+    .faq p { margin: 9px 0 0; color: var(--muted); font-size: 10px; line-height: 1.7; }
+    .faq p:last-child { margin-bottom: 0; }
+
+    .auth-wrap { max-width: 400px; margin: 10px auto 0; }
+    .auth-foot { margin: 16px 0 0; color: var(--muted); font-size: 10px; text-align: center; }
+
+    .modal { position: absolute; top: 50%; left: 50%; width: min(440px, calc(100% - 32px)); max-height: 88%; overflow: auto; transform: translate(-50%, -50%); padding: 24px; border-radius: var(--radius-lg); background: #fffdf9; box-shadow: 0 24px 60px rgba(0,0,0,.18); animation: pop-in .2s ease-out; }
+    @keyframes pop-in { from { opacity: 0; transform: translate(-50%, -46%); } to { opacity: 1; transform: translate(-50%, -50%); } }
+    .modal-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+    .modal-head h2 { margin: 0; font-size: 17px; letter-spacing: -.6px; }
+
+    .spinner { width: 13px; height: 13px; border: 2px solid rgba(255,255,255,.4); border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .muted { color: var(--muted); }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 10px; }
+    .row { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+    .tile { height: 96px; border-radius: var(--radius-md); background: #f1efe9; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+    .filters a.filter { display: inline-block; text-decoration: none; }
+
+    /* Utilities used by the extra pages, all built on the tokens above. */
+    [hidden] { display: none !important; }
+    .mt-sm { margin-top: 12px; }
+    .mb-sm { margin-bottom: 18px; }
+    .input.compact { width: 190px; }
+    .row.justify-end { justify-content: flex-end; }
+
+    @media (max-width: 920px) {
+      .addr-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .layout-2 { grid-template-columns: minmax(0, 1fr); }
+    }
+    @media (max-width: 700px) {
+      .steps { grid-template-columns: 1fr; }
+      .addr-grid { grid-template-columns: 1fr; }
+      .hero { padding: 26px 20px; }
+      .field-row { grid-template-columns: 1fr; }
+      .order-head { flex-direction: column; gap: 8px; }
+    }
+    @media (max-width: 420px) {
+      .panel { padding: 16px; }
+      .modal { padding: 18px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">Quick<span>Crave</span></div>
+      <p class="nav-label">Explore</p>
+      <nav class="nav" id="nav" aria-label="Primary navigation">
+        <button type="button" data-route="#/home"><span class="nav-icon">⌂</span>Home</button>
+        <button type="button" data-route="#/menu"><span class="nav-icon">▦</span>Menu</button>
+        <button type="button" data-route="#/orders"><span class="nav-icon">◷</span>My orders</button>
+        <button type="button" data-route="#/favorites"><span class="nav-icon">♡</span>Favorites</button>
+        <button type="button" data-route="#/addresses"><span class="nav-icon">⌖</span>Addresses</button>
+        <button type="button" data-route="#/help"><span class="nav-icon">?</span>Help</button>
+      </nav>
+      <div class="profile">
+        <button class="profile-button" id="profileButton" type="button"><span class="avatar" id="avatar">☻</span><span class="profile-copy"><strong id="profileName">Guest</strong><small id="profileHint">Sign in</small></span></button>
+        <button class="logout" id="logoutButton" type="button">Log out</button>
+      </div>
+    </aside>
+
+    <main class="main" id="view" aria-live="polite"></main>
+  </div>
+
+  <div class="overlay" id="cartOverlay" role="dialog" aria-modal="true" aria-label="Shopping cart">
+    <aside class="cart-drawer">
+      <div class="drawer-head"><h2>Your cart</h2><button class="close" id="closeCart" type="button" aria-label="Close cart">×</button></div>
+      <div class="cart-items" id="cartItems"></div>
+      <div class="summary">
+        <div class="summary-row"><span>Subtotal</span><strong id="subtotal">₱ 0</strong></div>
+        <div class="summary-row"><span>Delivery</span><strong>₱ 39</strong></div>
+        <div class="summary-row total"><span>Total</span><strong id="total">₱ 0</strong></div>
+        <button class="checkout" id="checkout" type="button" disabled>Place order</button>
+        <div class="notice show">Flat ₱39 delivery. Pay cash on delivery, or by GCash / Maya at checkout.</div>
+      </div>
+    </aside>
+  </div>
+
+  <div class="overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-label="Dialog">
+    <div class="modal" id="modal"></div>
+  </div>
+
+  <div class="toast" id="toast" role="status"></div>
+
+  <script>
+    /* ==========================================================================
+       QuickCrave — storefront in one file.
+       1. CONFIG      2. MENU DATA   3. STATE / STORAGE   4. API (server + built-in)
+       5. SHARED UI   6. PAGES       7. ROUTER            8. BOOT
+       ========================================================================== */
+
+    /* --------------------------------------------------------------- 1. CONFIG */
+    const CONFIG = {
+      // Point this at your API when the storefront and the API live on different
+      // hosts, e.g. "https://quickcrave-api.onrender.com". Empty means same origin.
+      API_BASE: "",
+      DELIVERY_FEE: 39,
+      SUPPORT_PHONE: "0917 555 0143",
+      SUPPORT_EMAIL: "hello@quickcrave.ph",
+      STORE_HOURS: "10:00 AM – 10:00 PM, daily",
+      BRAND: "QuickCrave",
+    };
+
+    const KEYS = {
+      cart: "quickcrave-cart",
+      token: "quickcrave-token",
+      user: "quickcrave-user",
+      accounts: "quickcrave-local-accounts",
+      orders: "quickcrave-local-orders",
+      favorites: "quickcrave-local-favorites",
+      addresses: "quickcrave-local-addresses",
+      adminKey: "quickcrave-admin-key",
+    };
+
+    const money = (value) => "₱ " + Number(value || 0).toLocaleString("en-PH");
+    const image = (id, color = "fff1d5") =>
+      "https://images.unsplash.com/" + id + "?auto=format&fit=crop&w=700&q=82&bg=" + color;
+    const escapeHtml = (value) =>
+      String(value == null ? "" : value).replace(/[&<>"']/g, (character) =>
+        ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[character]
+      );
+
+    /* ---------------------------------------------------------- 2. MENU DATA */
+    const PRODUCTS = [
+      { id: "bbq", name: "Hotsilog", category: "Rice meals", price: 70, tag: "Popular", description: "Garlic rice, egg, and savory BBQ pork.", image: image("photo-1512058564366-18510be2db19") },
+      { id: "bacsilog", name: "Bacsilog", category: "Rice meals", price: 95, description: "Crispy bacon, garlic rice, and sunny egg.", image: image("photo-1601050690597-df0568f70950") },
+      { id: "chickenrice", name: "Chicken Rice Bowl", category: "Rice meals", price: 120, description: "Tender chicken, fresh greens, and rice.", image: image("photo-1547592180-85f173990554") },
+      { id: "bangsilog", name: "Bangsilog", category: "Rice meals", price: 90, description: "Golden milkfish with crispy garlic rice.", image: image("photo-1515003197210-e0cd71810b5f") },
+      { id: "mango", name: "Mango", category: "Juices/Drinks", price: 60, description: "Fresh, sweet mango juice, 16 oz.", image: image("photo-1553530666-ba11a7da3888") },
+      { id: "orange", name: "Orange", category: "Juices/Drinks", price: 60, description: "Bright citrus juice, freshly squeezed.", image: image("photo-1600271886742-f049cd451bba") },
+      { id: "pineapple", name: "Pineapple", category: "Juices/Drinks", price: 90, description: "Tropical pineapple refresher, 16 oz.", image: image("photo-1546549032-9571cd6b27df") },
+      { id: "grape", name: "Grape", category: "Juices/Drinks", price: 90, description: "Cool, sweet grape juice, 16 oz.", image: image("photo-1543362906-acfc16c67564") },
+      { id: "beefburger", name: "Beef Burger", category: "Burgers", price: 60, tag: "Bestseller", description: "Classic beef patty with fresh lettuce.", image: image("photo-1568901346375-23c9450c58cd") },
+      { id: "cheeseburger", name: "Cheese Burger", category: "Burgers", price: 60, description: "Beef patty, melted cheese, and pickles.", image: image("photo-1550547660-d9450f859349") },
+      { id: "doublecheese", name: "Double Cheese Burger", category: "Burgers", price: 110, tag: "Popular", description: "Juicy beef patty with lettuce, tomato, and cheese.", image: image("photo-1586190848861-99aa4a171e90") },
+      { id: "chickenburger", name: "Chicken Burger", category: "Burgers", price: 50, description: "Crispy chicken, cheese, and fresh slaw.", image: image("photo-1606755962773-d324e0a13086") },
+      { id: "barbecuefries", name: "Barbecue Fries", category: "Fries", price: 60, description: "Golden crispy fries with smoky seasoning.", image: image("photo-1573080496219-bb080dd4f877") },
+      { id: "cheesefries", name: "Cheese Fries", category: "Fries", price: 60, description: "Crispy fries covered in creamy cheese.", image: image("photo-1630384060421-cb20d0e0649d") },
+      { id: "chilicheese", name: "Chili Cheese", category: "Fries", price: 100, description: "Loaded fries with chili and melted cheese.", image: image("photo-1576107232684-1279f390859f") },
+      { id: "sourcream", name: "Sourcream Fries", category: "Fries", price: 80, description: "Crispy fries with a cool sour cream dip.", image: image("photo-1585109649139-366815a0d713") },
+    ];
+
+    const CATEGORIES = ["All", ...new Set(PRODUCTS.map((product) => product.category))];
+
+    const ORDER_FLOW = [
+      { status: "pending", label: "Order placed", hint: "We have your order and the store has been notified." },
+      { status: "confirmed", label: "Confirmed", hint: "The store confirmed your order." },
+      { status: "preparing", label: "Preparing", hint: "Your food is being cooked fresh." },
+      { status: "out_for_delivery", label: "Out for delivery", hint: "Your rider is on the way." },
+      { status: "delivered", label: "Delivered", hint: "Enjoy your meal." },
+    ];
+
+    const STATUS_LABELS = {
+      pending: "Pending",
+      confirmed: "Confirmed",
+      preparing: "Preparing",
+      out_for_delivery: "Out for delivery",
+      delivered: "Delivered",
+      cancelled: "Cancelled",
+    };
+
+    const PAYMENT_LABELS = {
+      cod: "Cash on delivery",
+      gcash: "GCash",
+      maya: "Maya",
+    };
+
+    const PHONE_RE = /^(?:\+?63|0)9\d{9}$/;
+    const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    const EWALLET_REF_RE = /^[A-Za-z0-9-]{6,24}$/;
+
+    /* ------------------------------------------------------ 3. STATE/STORAGE */
+    function readJson(key, fallback) {
+      try {
+        const raw = localStorage.getItem(key);
+        return raw ? JSON.parse(raw) : fallback;
+      } catch {
+        return fallback;
+      }
+    }
+    function writeJson(key, value) {
+      try {
+        localStorage.setItem(key, JSON.stringify(value));
+      } catch {
+        /* storage unavailable (private mode) — the app still works for this visit */
+      }
+    }
+    function removeKey(key) {
+      try {
+        localStorage.removeItem(key);
+      } catch {
+        /* ignore */
+      }
+    }
+
+    function loadCart() {
+      const stored = readJson(KEYS.cart, {});
+      const cart = {};
+      if (stored && typeof stored === "object") {
+        for (const [id, quantity] of Object.entries(stored)) {
+          const amount = Math.min(Math.floor(Number(quantity)) || 0, 50);
+          if (amount > 0 && PRODUCTS.some((product) => product.id === id)) cart[id] = amount;
+        }
+      }
+      return cart;
+    }
+
+    const state = {
+      online: null, // null = unknown, true = API reachable, false = running self-contained
+      token: localStorage.getItem(KEYS.token) || "",
+      user: readJson(KEYS.user, null),
+      products: PRODUCTS.slice(),
+      favorites: new Set(),
+      addresses: [],
+      cart: loadCart(),
+      activeCategory: "All",
+      searchQuery: "",
+      afterLogin: "",
+      justPlaced: "",
+      adminKey: "",
+      adminFilter: "",
+      query: new URLSearchParams(),
+      route: "/home",
+      loading: false,
+    };
+
+    const productById = (id) => state.products.find((product) => product.id === id);
+    function cartEntries() {
+      return Object.entries(state.cart)
+        .map(([id, quantity]) => ({ product: productById(id), quantity }))
+        .filter((entry) => entry.product);
+    }
+    const cartCount = () => cartEntries().reduce((sum, entry) => sum + entry.quantity, 0);
+    const cartSubtotal = () =>
+      cartEntries().reduce((sum, entry) => sum + entry.product.price * entry.quantity, 0);
+    const cartDelivery = () => (cartEntries().length ? CONFIG.DELIVERY_FEE : 0);
+
+    function persistCart() {
+      writeJson(KEYS.cart, state.cart);
+    }
+    function addToCart(id, quantity = 1) {
+      const product = productById(id);
+      if (!product) return;
+      state.cart[id] = Math.min((state.cart[id] || 0) + quantity, 50);
+      persistCart();
+      renderCart();
+      toast(product.name + " added to your cart");
+    }
+    function changeQuantity(id, amount) {
+      state.cart[id] = (state.cart[id] || 0) + amount;
+      if (state.cart[id] <= 0) delete state.cart[id];
+      persistCart();
+      renderCart();
+    }
+
+    function scoped(base) {
+      const owner = state.user && state.user.email ? state.user.email : "guest";
+      return base + ":" + owner;
+    }
+
+    function formatDateTime(value) {
+      if (!value) return "";
+      const text = String(value);
+      const iso = text.includes("T") ? text : text.replace(" ", "T") + "Z";
+      const date = new Date(iso);
+      if (Number.isNaN(date.getTime())) return text;
+      return date.toLocaleString("en-PH", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+      });
+    }
+
+    const todayStamp = () => new Date().toISOString().slice(0, 10).replace(/-/g, "");
+
+    /* -------------------------------------------------- 4. API (server + built-in) */
+    class ApiError extends Error {
+      constructor(message, status) {
+        super(message);
+        this.name = "ApiError";
+        this.status = status;
+      }
+    }
+
+    async function apiFetch(path, { method = "GET", body, token, adminKey } = {}) {
+      const headers = { Accept: "application/json" };
+      if (body !== undefined) headers["Content-Type"] = "application/json";
+      const authToken = token === undefined ? state.token : token;
+      if (authToken) headers.Authorization = "Bearer " + authToken;
+      if (adminKey) headers["x-admin-key"] = adminKey;
+
+      const response = await fetch(CONFIG.API_BASE + path, {
+        method,
+        headers,
+        body: body === undefined ? undefined : JSON.stringify(body),
+      });
+
+      let payload = null;
+      try {
+        payload = await response.json();
+      } catch {
+        payload = null;
+      }
+      if (!response.ok) {
+        throw new ApiError(
+          (payload && payload.error) || "Something went wrong. Please try again.",
+          response.status
+        );
+      }
+      return payload || {};
+    }
+
+    async function sha256(text) {
+      if (window.crypto && window.crypto.subtle) {
+        const bytes = new TextEncoder().encode(text);
+        const digest = await window.crypto.subtle.digest("SHA-256", bytes);
+        return Array.from(new Uint8Array(digest))
+          .map((byte) => byte.toString(16).padStart(2, "0"))
+          .join("");
+      }
+      return "plain:" + text; // only reachable in insecure contexts
+    }
+
+    /**
+     * Built-in data layer: used when no API answers (a file opened directly, or
+     * a preview with no server). Same method names and shapes as the server, so
+     * no page ever needs to know which one is in play.
+     */
+    const local = {
+      async register({ name, email, password }) {
+        const accounts = readJson(KEYS.accounts, []);
+        if (accounts.some((account) => account.email === email)) {
+          throw new ApiError("That email is already registered. Try signing in.", 409);
+        }
+        const account = { id: accounts.length + 1, name, email, passwordHash: await sha256(password) };
+        accounts.push(account);
+        writeJson(KEYS.accounts, accounts);
+        return { user: { id: account.id, name, email }, token: "local-" + account.id };
+      },
+      async login({ email, password }) {
+        const accounts = readJson(KEYS.accounts, []);
+        const account = accounts.find((entry) => entry.email === email);
+        const hash = await sha256(password);
+        if (!account || account.passwordHash !== hash) {
+          throw new ApiError("Email or password is incorrect", 401);
+        }
+        return { user: { id: account.id, name: account.name, email: account.email }, token: "local-" + account.id };
+      },
+      async orders() {
+        return readJson(scoped(KEYS.orders), []);
+      },
+      async order(code) {
+        const order = readJson(scoped(KEYS.orders), []).find((entry) => entry.code === code);
+        if (!order) throw new ApiError("Order not found", 404);
+        return order;
+      },
+      async placeOrder({ items, paymentMethod, paymentRef, address }) {
+        const lines = items.map((item) => {
+          const product = productById(item.productId);
+          return {
+            productId: item.productId,
+            name: product.name,
+            unitPrice: product.price,
+            quantity: item.quantity,
+          };
+        });
+        const subtotal = lines.reduce((sum, line) => sum + line.unitPrice * line.quantity, 0);
+        const orders = readJson(scoped(KEYS.orders), []);
+        const day = todayStamp();
+        const sequence = orders.filter((entry) => entry.code.indexOf("QC-" + day) === 0).length + 1;
+        const order = {
+          code: "QC-" + day + "-" + String(sequence).padStart(4, "0"),
+          status: "pending",
+          paymentMethod,
+          paymentRef: paymentRef || null,
+          subtotal,
+          deliveryFee: CONFIG.DELIVERY_FEE,
+          total: subtotal + CONFIG.DELIVERY_FEE,
+          placedAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          address,
+          customer: {
+            name: state.user ? state.user.name : "Guest",
+            email: state.user ? state.user.email : "",
+            phone: address.phone,
+          },
+          items: lines,
+        };
+        orders.unshift(order);
+        writeJson(scoped(KEYS.orders), orders);
+        return order;
+      },
+      async cancelOrder(code) {
+        const orders = readJson(scoped(KEYS.orders), []);
+        const order = orders.find((entry) => entry.code === code);
+        if (!order) throw new ApiError("Order not found", 404);
+        if (order.status !== "pending" && order.status !== "confirmed") {
+          throw new ApiError("This order is already being prepared. Please contact the store to cancel.", 409);
+        }
+        order.status = "cancelled";
+        order.updatedAt = new Date().toISOString();
+        writeJson(scoped(KEYS.orders), orders);
+        return order;
+      },
+      async updatePayment(code, { paymentMethod, paymentRef }) {
+        const orders = readJson(scoped(KEYS.orders), []);
+        const order = orders.find((entry) => entry.code === code);
+        if (!order) throw new ApiError("Order not found", 404);
+        if (order.status === "delivered" || order.status === "cancelled") {
+          throw new ApiError("This order can no longer be changed", 409);
+        }
+        order.paymentMethod = paymentMethod;
+        order.paymentRef = paymentRef || null;
+        order.updatedAt = new Date().toISOString();
+        writeJson(scoped(KEYS.orders), orders);
+        return order;
+      },
+      async favorites() {
+        return readJson(scoped(KEYS.favorites), []);
+      },
+      async addFavorite(productId) {
+        const list = readJson(scoped(KEYS.favorites), []);
+        if (!list.includes(productId)) list.push(productId);
+        writeJson(scoped(KEYS.favorites), list);
+        return list;
+      },
+      async removeFavorite(productId) {
+        const list = readJson(scoped(KEYS.favorites), []).filter((id) => id !== productId);
+        writeJson(scoped(KEYS.favorites), list);
+        return list;
+      },
+      async addresses() {
+        return readJson(scoped(KEYS.addresses), []);
+      },
+      async saveAddress(address, id) {
+        const list = readJson(scoped(KEYS.addresses), []);
+        if (id) {
+          const existing = list.find((entry) => String(entry.id) === String(id));
+          if (!existing) throw new ApiError("Address not found", 404);
+          Object.assign(existing, address);
+        } else {
+          const isFirst = list.length === 0;
+          list.push({ ...address, id: Date.now(), isDefault: isFirst || address.isDefault ? 1 : 0 });
+        }
+        if (address.isDefault) {
+          list.forEach((entry) => {
+            entry.isDefault = String(entry.id) === String(id) ? 1 : 0;
+          });
+        }
+        writeJson(scoped(KEYS.addresses), list);
+        return list;
+      },
+      async deleteAddress(id) {
+        let list = readJson(scoped(KEYS.addresses), []);
+        list = list.filter((entry) => String(entry.id) !== String(id));
+        if (list.length && !list.some((entry) => entry.isDefault)) list[0].isDefault = 1;
+        writeJson(scoped(KEYS.addresses), list);
+        return list;
+      },
+      async setDefaultAddress(id) {
+        const list = readJson(scoped(KEYS.addresses), []);
+        list.forEach((entry) => {
+          entry.isDefault = String(entry.id) === String(id) ? 1 : 0;
+        });
+        writeJson(scoped(KEYS.addresses), list);
+        return list;
+      },
+      async adminOrders(status) {
+        // Offline there is only this browser's data, so the owner screen shows
+        // the orders placed on this device.
+        const orders = readJson(scoped(KEYS.orders), []);
+        return status ? orders.filter((order) => order.status === status) : orders;
+      },
+      async adminSetStatus(code, status) {
+        const orders = readJson(scoped(KEYS.orders), []);
+        const order = orders.find((entry) => entry.code === code);
+        if (!order) throw new ApiError("Order not found", 404);
+        order.status = status;
+        order.updatedAt = new Date().toISOString();
+        writeJson(scoped(KEYS.orders), orders);
+        return { code, status };
+      },
+    };
+
+    const api = {
+      async probe() {
+        try {
+          const data = await apiFetch("/api/health");
+          state.online = !!(data && data.status === "ok");
+        } catch {
+          state.online = false;
+        }
+        return state.online;
+      },
+      async products() {
+        if (state.online !== true) return PRODUCTS.slice();
+        const { products } = await apiFetch("/api/products");
+        return Array.isArray(products) && products.length ? products : PRODUCTS.slice();
+      },
+      async register(payload) {
+        return state.online ? apiFetch("/api/auth/register", { method: "POST", body: payload }) : local.register(payload);
+      },
+      async login(payload) {
+        return state.online ? apiFetch("/api/auth/login", { method: "POST", body: payload }) : local.login(payload);
+      },
+      async me() {
+        if (!state.online) return state.user;
+        const { user } = await apiFetch("/api/auth/me");
+        return user;
+      },
+      async orders() {
+        return state.online ? (await apiFetch("/api/orders")).orders : local.orders();
+      },
+      async order(code) {
+        const path = "/api/orders/" + encodeURIComponent(code);
+        return state.online ? (await apiFetch(path)).order : local.order(code);
+      },
+      async placeOrder(payload) {
+        return state.online
+          ? (await apiFetch("/api/orders", { method: "POST", body: payload })).order
+          : local.placeOrder(payload);
+      },
+      async cancelOrder(code) {
+        const path = "/api/orders/" + encodeURIComponent(code) + "/cancel";
+        return state.online ? (await apiFetch(path, { method: "POST" })).order : local.cancelOrder(code);
+      },
+      async updatePayment(code, payload) {
+        const path = "/api/orders/" + encodeURIComponent(code) + "/payment";
+        return state.online
+          ? (await apiFetch(path, { method: "POST", body: payload })).order
+          : local.updatePayment(code, payload);
+      },
+      async favorites() {
+        return state.online ? (await apiFetch("/api/favorites")).favorites : local.favorites();
+      },
+      async toggleFavorite(productId, wanted) {
+        if (!state.online) return wanted ? local.addFavorite(productId) : local.removeFavorite(productId);
+        if (wanted) {
+          return (await apiFetch("/api/favorites", { method: "POST", body: { productId } })).favorites;
+        }
+        return (await apiFetch("/api/favorites/" + encodeURIComponent(productId), { method: "DELETE" }))
+          .favorites;
+      },
+      async addresses() {
+        return state.online ? (await apiFetch("/api/addresses")).addresses : local.addresses();
+      },
+      async saveAddress(address, id) {
+        if (!state.online) return local.saveAddress(address, id);
+        const { addresses } = id
+          ? await apiFetch("/api/addresses/" + encodeURIComponent(id), { method: "PATCH", body: address })
+          : await apiFetch("/api/addresses", { method: "POST", body: address });
+        return addresses;
+      },
+      async deleteAddress(id) {
+        if (!state.online) return local.deleteAddress(id);
+        return (await apiFetch("/api/addresses/" + encodeURIComponent(id), { method: "DELETE" })).addresses;
+      },
+      async setDefaultAddress(id) {
+        if (!state.online) return local.setDefaultAddress(id);
+        const path = "/api/addresses/" + encodeURIComponent(id) + "/default";
+        return (await apiFetch(path, { method: "POST" })).addresses;
+      },
+      async adminOrders(status) {
+        if (!state.online) return local.adminOrders(status);
+        const query = status ? "?status=" + encodeURIComponent(status) : "";
+        return (await apiFetch("/api/admin/orders" + query, { adminKey: state.adminKey })).orders;
+      },
+      async adminSetStatus(code, status) {
+        if (!state.online) return local.adminSetStatus(code, status);
+        const path = "/api/admin/orders/" + encodeURIComponent(code) + "/status";
+        return apiFetch(path, { method: "PATCH", adminKey: state.adminKey, body: { status } });
+      },
+    };
+
+    /* --------------------------------------------------------- 5. SHARED UI */
+    const $ = (selector, scope) => (scope || document).querySelector(selector);
+    const $$ = (selector, scope) => Array.from((scope || document).querySelectorAll(selector));
+    const setText = (selector, value) => {
+      const node = $(selector);
+      if (node) node.textContent = value;
+    };
+
+    let toastTimer = null;
+    function toast(message) {
+      const element = $("#toast");
+      element.textContent = message;
+      element.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => element.classList.remove("show"), 2600);
+    }
+
+    const isOverlayOpen = (selector) => {
+      const node = $(selector);
+      return !!node && node.classList.contains("open");
+    };
+    function openCart(open = true) {
+      $("#cartOverlay").classList.toggle("open", open);
+      if (open) renderCart();
+    }
+    function openModal(html) {
+      $("#modal").innerHTML = html;
+      $("#modalOverlay").classList.add("open");
+      const focusable =
+        $("#modal").querySelector("[data-autofocus]") ||
+        $("#modal").querySelector("input, textarea, select, button");
+      if (focusable) focusable.focus();
+    }
+    function closeModal() {
+      $("#modalOverlay").classList.remove("open");
+      $("#modal").innerHTML = "";
+    }
+
+    /** The cart drawer, shared by every page. */
+    function renderCart() {
+      const entries = cartEntries();
+      const count = entries.reduce((sum, entry) => sum + entry.quantity, 0);
+      const subtotal = entries.reduce((sum, entry) => sum + entry.product.price * entry.quantity, 0);
+
+      setText("#cartCount", count);
+      setText("#subtotal", money(subtotal));
+      setText("#total", money(count ? subtotal + CONFIG.DELIVERY_FEE : 0));
+      const checkout = $("#checkout");
+      if (checkout) checkout.disabled = !count;
+
+      const list = $("#cartItems");
+      if (!list) return;
+      list.innerHTML = entries.length
+        ? entries
+            .map(
+              ({ product, quantity }) => `
+              <div class="cart-line">
+                <img src="${product.image}" alt="${escapeHtml(product.name)}">
+                <div>
+                  <strong>${escapeHtml(product.name)}</strong>
+                  <small>${money(product.price)} each</small>
+                  <div class="quantity">
+                    <button type="button" data-minus="${product.id}" aria-label="Remove one ${escapeHtml(product.name)}">−</button>
+                    <span>${quantity}</span>
+                    <button type="button" data-plus="${product.id}" aria-label="Add one ${escapeHtml(product.name)}">+</button>
+                  </div>
+                </div>
+                <span class="line-total">${money(product.price * quantity)}</span>
+              </div>`
+            )
+            .join("")
+        : `<div class="cart-empty">Your cart is waiting for something delicious.</div>`;
+    }
+
+    function renderIdentity() {
+      const signedIn = !!state.user;
+      const name = signedIn ? state.user.name : "Guest";
+      setText("#profileName", name);
+      setText("#profileHint", signedIn ? "My profile" : "Sign in to order");
+      setText("#avatar", signedIn ? name.charAt(0).toUpperCase() : "☻");
+      const logout = $("#logoutButton");
+      if (logout) logout.textContent = signedIn ? "Log out" : "Sign in";
+    }
+
+    function signOut() {
+      state.token = "";
+      state.user = null;
+      state.favorites = new Set();
+      state.addresses = [];
+      removeKey(KEYS.token);
+      removeKey(KEYS.user);
+      renderIdentity();
+      toast("You have been signed out.");
+      navigate("/menu");
+    }
+
+    const statusChip = (status) =>
+      `<span class="chip chip-${escapeHtml(status)}">${escapeHtml(STATUS_LABELS[status] || status)}</span>`;
+
+    /** One product card, shared by the menu, home and favorites pages. */
+    function productCard(product) {
+      const saved = state.favorites.has(product.id);
+      return `
+        <article class="card">
+          <div class="food-art">
+            <img src="${product.image}" alt="${escapeHtml(product.name)}" loading="lazy">
+            ${product.tag ? `<span class="tag">${escapeHtml(product.tag)}</span>` : ""}
+            <button class="fav-toggle${saved ? " on" : ""}" type="button" data-favorite="${product.id}"
+              aria-pressed="${saved}" aria-label="${saved ? "Remove" : "Save"} ${escapeHtml(product.name)} ${saved ? "from" : "to"} favorites">${saved ? "♥" : "♡"}</button>
+          </div>
+          <div class="card-content">
+            <h3>${escapeHtml(product.name)}</h3>
+            <p>${escapeHtml(product.description)}</p>
+            <div class="card-footer">
+              <span class="price">${money(product.price)}</span>
+              <button class="add" type="button" data-add="${product.id}" data-id="${product.id}">Add</button>
+            </div>
+          </div>
+        </article>`;
+    }
+
+    /** The topbar, identical in structure to the menu design on every page. */
+    function pageShell({ eyebrow, title, search = false, cart = true }) {
+      return `
+        <header class="topbar">
+          <div style="display:flex;align-items:flex-start;gap:12px">
+            <button class="mobile-menu" id="mobileMenu" type="button" aria-label="Open menu">☰</button>
+            <div><p class="eyebrow">${escapeHtml(eyebrow)}</p><h1>${escapeHtml(title)}</h1></div>
+          </div>
+          <div class="top-actions">
+            ${search ? `<label class="search-wrap"><span>⌕</span><input class="search" id="search" type="search" placeholder="Search for food..." aria-label="Search for food" /></label>` : ""}
+            ${cart ? `<button class="cart-button" id="cartButton" type="button" aria-label="Open shopping cart">🛒<span class="cart-count" id="cartCount">0</span></button>` : ""}
+          </div>
+        </header>`;
+    }
+
+    function emptyState(message, action) {
+      return `<div class="empty">${escapeHtml(message)}${action ? `<br><br>${action}` : ""}</div>`;
+    }
+
+    function signInRequired(next, message) {
+      return {
+        html: `
+          ${pageShell({ eyebrow: "One more step", title: "Sign in to continue" })}
+          <div class="panel">
+            <h2>${escapeHtml(message || "This page belongs to your account.")}</h2>
+            <p class="panel-note">It takes one screen: your email and a password. Your cart is kept, so you can pick up right where you left off.</p>
+            <div class="row">
+              <button class="btn" type="button" data-go="/login" data-after="${escapeHtml(next)}">Sign in or create account</button>
+              <a class="btn quiet" href="#/menu">Back to the menu</a>
+            </div>
+          </div>`,
+      };
+    }
+
+    function formValues(form) {
+      const data = {};
+      new FormData(form).forEach((value, key) => {
+        data[key] = typeof value === "string" ? value.trim() : value;
+      });
+      return data;
+    }
+
+    function showFieldErrors(scope, errors) {
+      $$("[data-error]", scope).forEach((node) => {
+        node.textContent = errors[node.dataset.error] || "";
+      });
+    }
+
+    /** Runs an async action with a busy submit button. */
+    async function withBusy(button, label, task) {
+      if (!button) return task();
+      const original = button.innerHTML;
+      button.disabled = true;
+      button.innerHTML = `<span class="spinner"></span>${escapeHtml(label)}`;
+      try {
+        return await task();
+      } finally {
+        button.disabled = false;
+        button.innerHTML = original;
+      }
+    }
+
+    function reportError(error, fallback = "Something went wrong. Please try again.") {
+      const message = error instanceof Error && error.message ? error.message : fallback;
+      toast(message);
+      if (!(error instanceof ApiError)) console.error(error);
+      return message;
+    }
+
+    async function handleFavoriteClick(productId) {
+      if (!state.user) {
+        toast("Sign in to save favorites.");
+        state.afterLogin = state.route;
+        navigate("/login");
+        return;
+      }
+      const wanted = !state.favorites.has(productId);
+      try {
+        const list = await api.toggleFavorite(productId, wanted);
+        state.favorites = new Set(list);
+        const product = productById(productId);
+        toast((product ? product.name : "Item") + (wanted ? " saved to favorites" : " removed from favorites"));
+        void render();
+      } catch (error) {
+        reportError(error);
+      }
+    }
+
+    async function handleCancelOrder(code) {
+      if (!window.confirm("Cancel order " + code + "?")) return;
+      try {
+        await api.cancelOrder(code);
+        toast("Order " + code + " cancelled.");
+        void render();
+      } catch (error) {
+        reportError(error);
+      }
+    }
+
+    async function handleReorder(code) {
+      try {
+        const order = await api.order(code);
+        let added = 0;
+        let missing = 0;
+        for (const item of order.items) {
+          const product = productById(item.productId);
+          if (!product) {
+            missing += 1;
+            continue;
+          }
+          state.cart[item.productId] = Math.min((state.cart[item.productId] || 0) + item.quantity, 50);
+          added += 1;
+        }
+        persistCart();
+        renderCart();
+        if (!added) {
+          toast("Those items are no longer on the menu.");
+          return;
+        }
+        toast(missing ? added + " items added — some are no longer available." : "Added to your cart.");
+        openCart(true);
+      } catch (error) {
+        reportError(error);
+      }
+    }
+
+    /* ----------------------------------------------------------- 6. PAGES */
+
+    function renderHome() {
+      const popular = state.products.filter((product) => product.tag);
+      const categories = [...new Set(state.products.map((product) => product.category))];
+      return {
+        html: `
+          ${pageShell({ eyebrow: "Good food, good mood.", title: "Welcome to QuickCrave" })}
+          <section class="hero">
+            <span class="hero-badge">Ready in 5–20 mins · Flat ${money(CONFIG.DELIVERY_FEE)} delivery</span>
+            <h2>Hot rice meals, burgers and fries — delivered to your door.</h2>
+            <p>Order in a few taps and pay your way: cash on delivery, GCash or Maya. We cook to order and keep you posted from the kitchen all the way to your gate.</p>
+            <div class="hero-actions">
+              <a class="btn" href="#/menu">Browse the menu</a>
+              <a class="btn ghost" href="#/orders">Track my order</a>
+            </div>
+          </section>
+          <section class="section">
+            <div class="section-head"><h2>Popular right now</h2><a class="link" href="#/menu">See the full menu</a></div>
+            <div class="menu-grid">${popular.map((product) => productCard(product)).join("")}</div>
+          </section>
+          <section class="section">
+            <div class="section-head"><h2>Browse by category</h2></div>
+            <div class="filters">
+              ${categories
+                .map(
+                  (category) =>
+                    `<a class="filter" href="#/menu?category=${encodeURIComponent(category)}">${escapeHtml(category)}</a>`
+                )
+                .join("")}
+            </div>
+          </section>
+          <section class="section">
+            <div class="section-head"><h2>How it works</h2></div>
+            <div class="steps">
+              <div class="step"><div class="step-num">1</div><h3>Pick your food</h3><p>Browse the menu and add what you like to the cart.</p></div>
+              <div class="step"><div class="step-num">2</div><h3>Choose how you pay</h3><p>Cash on delivery, or send it by GCash or Maya and paste the reference number.</p></div>
+              <div class="step"><div class="step-num">3</div><h3>Follow your rider</h3><p>Watch the order move from the kitchen to out for delivery in My orders.</p></div>
+            </div>
+          </section>`,
+      };
+    }
+
+    function renderMenu() {
+      // The category lives in the URL, so a link like #/menu?category=Fries is
+      // shareable and a plain #/menu resets to All.
+      const requested = state.query.get("category");
+      state.activeCategory = requested && CATEGORIES.includes(requested) ? requested : "All";
+      return {
+        html: `
+          ${pageShell({ eyebrow: "Good food, good mood.", title: "Our Menu", search: true })}
+          <section class="toolbar" aria-label="Menu filters">
+            <p class="subcopy">Pick your favorite. Ready in 5–20 mins.</p>
+            <div class="filters" id="filters">
+              ${CATEGORIES.map(
+                (category) =>
+                  `<button class="filter${category === state.activeCategory ? " active" : ""}" data-category="${escapeHtml(category)}" type="button">${escapeHtml(category)}</button>`
+              ).join("")}
+            </div>
+          </section>
+          <section class="menu-grid" id="menuGrid" aria-live="polite"></section>`,
+        mount: mountMenu,
+      };
+    }
+
+    function mountMenu() {
+      const search = $("#search");
+      if (search) {
+        search.value = state.searchQuery;
+        search.addEventListener("input", () => {
+          state.searchQuery = search.value;
+          drawMenuGrid();
+        });
+      }
+      const filters = $("#filters");
+      if (filters) {
+        filters.addEventListener("click", (event) => {
+          const button = event.target.closest(".filter");
+          if (!button) return;
+          state.activeCategory = button.dataset.category;
+          const hash =
+            button.dataset.category === "All"
+              ? "#/menu"
+              : "#/menu?category=" + encodeURIComponent(button.dataset.category);
+          history.replaceState(null, "", hash);
+          $$(".filter", filters).forEach((node) => node.classList.toggle("active", node === button));
+          drawMenuGrid();
+        });
+      }
+      drawMenuGrid();
+    }
+
+    function drawMenuGrid() {
+      const grid = $("#menuGrid");
+      if (!grid) return;
+      const query = state.searchQuery.trim().toLowerCase();
+      const visible = state.products.filter((product) => {
+        const inCategory =
+          state.activeCategory === "All" || product.category === state.activeCategory;
+        const matches =
+          !query || (product.name + " " + product.description).toLowerCase().includes(query);
+        return inCategory && matches;
+      });
+      grid.innerHTML = visible.length
+        ? visible.map((product) => productCard(product)).join("")
+        : `<div class="empty">No cravings found. Try another search or category.</div>`;
+    }
+
+    async function renderCheckout() {
+      if (!state.user) return signInRequired("/checkout", "Sign in so we know where to deliver.");
+      const entries = cartEntries();
+      if (!entries.length) {
+        return {
+          html: `
+            ${pageShell({ eyebrow: "Checkout", title: "Your cart is empty" })}
+            <div class="panel">
+              <h2>Nothing to check out yet</h2>
+              <p class="panel-note">Add a few dishes from the menu and come back.</p>
+              <a class="btn" href="#/menu">Browse the menu</a>
+            </div>`,
+        };
+      }
+
+      let addresses = state.addresses;
+      try {
+        addresses = await api.addresses();
+        state.addresses = addresses;
+      } catch (error) {
+        reportError(error);
+      }
+
+      const chosen = addresses.find((address) => address.isDefault) || addresses[0] || null;
+      const subtotal = cartSubtotal();
+      const delivery = cartDelivery();
+      const methods = [
+        ["cod", "Cash on delivery", "Pay the rider when your food arrives."],
+        ["gcash", "GCash", "Send the exact total, then paste the reference number."],
+        ["maya", "Maya", "Send the exact total, then paste the reference number."],
+      ];
+
+      return {
+        html: `
+          ${pageShell({ eyebrow: "Almost there", title: "Checkout" })}
+          <div class="layout-2">
+            <div>
+              <div class="panel">
+                <h2>Delivery details</h2>
+                <p class="panel-note">The rider will call the number below on the way.</p>
+                ${
+                  addresses.length
+                    ? `<div class="pay-options" id="savedAddresses">
+                        ${addresses
+                          .map(
+                            (address) => `
+                          <label class="pay-option${chosen && address.id === chosen.id ? " active" : ""}">
+                            <input type="radio" name="savedAddress" value="${address.id}" ${chosen && address.id === chosen.id ? "checked" : ""}>
+                            <span>${escapeHtml(address.label)}${address.isDefault ? " · default" : ""}<small>${escapeHtml(address.recipient)}, ${escapeHtml(address.phone)} — ${escapeHtml(address.street)}, ${escapeHtml(address.city)}</small></span>
+                          </label>`
+                          )
+                          .join("")}
+                        <label class="pay-option" id="newAddressOption">
+                          <input type="radio" name="savedAddress" value="new">
+                          <span>Deliver to another address<small>Use a different address just for this order.</small></span>
+                        </label>
+                      </div>`
+                    : `<p class="panel-note"><strong>No saved address yet.</strong> Fill in the form below and we will save it to your account.</p>`
+                }
+              </div>
+              <form class="panel" id="checkoutForm" novalidate ${addresses.length ? "hidden" : ""}>
+                <h2>Where should we deliver?</h2>
+                <p class="panel-note">Please double-check the mobile number — the rider will call it.</p>
+                <div class="field-row">
+                  <div class="field"><label for="label">Address label</label><input class="input" id="label" name="label" value="Home"><span class="field-error" data-error="label"></span></div>
+                  <div class="field"><label for="recipient">Recipient name</label><input class="input" id="recipient" name="recipient" autocomplete="name" value=""><span class="field-error" data-error="recipient"></span></div>
+                </div>
+                <div class="field-row">
+                  <div class="field"><label for="phone">Mobile number</label><input class="input" id="phone" name="phone" inputmode="tel" autocomplete="tel" placeholder="09171234567" value=""><span class="field-error" data-error="phone"></span></div>
+                  <div class="field"><label for="city">City</label><input class="input" id="city" name="city" autocomplete="address-level2" placeholder="Makati City" value=""><span class="field-error" data-error="city"></span></div>
+                </div>
+                <div class="field"><label for="street">Street, building, landmark</label><input class="input" id="street" name="street" autocomplete="street-address" placeholder="12 Mabini Street, Barangay Poblacion" value=""><span class="field-error" data-error="street"></span></div>
+                <div class="field"><label for="notes">Delivery notes</label><textarea class="textarea" id="notes" name="notes" placeholder="Gate code, leave at the lobby..."></textarea><span class="field-error" data-error="notes"></span></div>
+              </form>
+              <div class="panel">
+                <h2>Payment</h2>
+                <p class="panel-note">For GCash or Maya, send the total to <strong>${escapeHtml(CONFIG.SUPPORT_PHONE)}</strong> and paste the reference number below.</p>
+                <div class="pay-options" id="payOptions">
+                  ${methods
+                    .map(
+                      ([value, title, hint], index) => `
+                    <label class="pay-option${index === 0 ? " active" : ""}">
+                      <input type="radio" name="paymentMethod" value="${value}" ${index === 0 ? "checked" : ""}>
+                      <span>${title}<small>${hint}</small></span>
+                    </label>`
+                    )
+                    .join("")}
+                </div>
+                <div class="field mt-sm" id="referenceField" hidden>
+                  <label for="paymentRef">GCash / Maya reference number</label>
+                  <input class="input" id="paymentRef" name="paymentRef" placeholder="0123456789012" value="">
+                  <span class="field-error" data-error="paymentRef"></span>
+                </div>
+              </div>
+            </div>
+            <div class="panel">
+              <h2>Order summary</h2>
+              <p class="panel-note">${entries.reduce((sum, entry) => sum + entry.quantity, 0)} item(s) from your cart</p>
+              <div class="summary-lines">
+                ${entries
+                  .map(
+                    ({ product, quantity }) => `
+                  <div class="line"><span>${escapeHtml(product.name)}<small>${quantity} × ${money(product.price)}</small></span><strong>${money(product.price * quantity)}</strong></div>`
+                  )
+                  .join("")}
+              </div>
+              <div class="summary">
+                <div class="summary-row"><span>Subtotal</span><strong>${money(subtotal)}</strong></div>
+                <div class="summary-row"><span>Delivery</span><strong>${money(delivery)}</strong></div>
+                <div class="summary-row total"><span>Total</span><strong>${money(subtotal + delivery)}</strong></div>
+                <button class="checkout" id="placeOrder" type="button">Place order</button>
+                <p class="panel-note mt-sm">You can cancel while the order is still pending or confirmed.</p>
+              </div>
+            </div>
+          </div>`,
+        mount: () => mountCheckout(addresses),
+      };
+    }
+
+    function mountCheckout(addresses) {
+      const form = $("#checkoutForm");
+      const referenceField = $("#referenceField");
+      const placeOrderButton = $("#placeOrder");
+
+      const syncAddressChoice = () => {
+        const selected = $('input[name="savedAddress"]:checked');
+        const wantsNew = !selected || selected.value === "new";
+        if (form) form.hidden = !wantsNew;
+        $$("#savedAddresses .pay-option").forEach((option) => {
+          option.classList.toggle("active", !!selected && option.contains(selected));
+        });
+      };
+      const savedAddresses = $("#savedAddresses");
+      if (savedAddresses) savedAddresses.addEventListener("change", syncAddressChoice);
+      syncAddressChoice();
+
+      const syncPayment = () => {
+        const selected = $('input[name="paymentMethod"]:checked');
+        const method = selected ? selected.value : "cod";
+        $$("#payOptions .pay-option").forEach((option) => {
+          option.classList.toggle("active", !!selected && option.contains(selected));
+        });
+        if (referenceField) referenceField.hidden = method === "cod";
+      };
+      const payOptions = $("#payOptions");
+      if (payOptions) payOptions.addEventListener("change", syncPayment);
+      syncPayment();
+
+      if (!placeOrderButton) return;
+      placeOrderButton.addEventListener("click", async () => {
+        const errors = {};
+        const selected = $('input[name="savedAddress"]:checked');
+        const usingSaved = addresses.length > 0 && (!selected || selected.value !== "new");
+        let address = null;
+        let saveNewAddress = false;
+
+        if (usingSaved) {
+          const match = addresses.find((entry) => String(entry.id) === String(selected.value));
+          if (!match) {
+            toast("Choose a delivery address.");
+            return;
+          }
+          address = {
+            label: match.label,
+            recipient: match.recipient,
+            phone: match.phone,
+            street: match.street,
+            city: match.city,
+            notes: match.notes || "",
+          };
+        } else {
+          const values = form ? formValues(form) : {};
+          address = {
+            label: values.label || "Home",
+            recipient: values.recipient || "",
+            phone: (values.phone || "").replace(/[\s-]/g, ""),
+            street: values.street || "",
+            city: values.city || "",
+            notes: values.notes || "",
+          };
+          if (!values.label) errors.label = "Add a label, e.g. Home";
+          if (!address.recipient) errors.recipient = "Who should we hand the food to?";
+          if (!PHONE_RE.test(address.phone)) errors.phone = "Enter a valid mobile number";
+          if (!address.street) errors.street = "Street and building are required";
+          if (!address.city) errors.city = "City is required";
+          saveNewAddress = !Object.keys(errors).length;
+        }
+
+        const methodInput = $('input[name="paymentMethod"]:checked');
+        const paymentMethod = methodInput ? methodInput.value : "cod";
+        const referenceInput = $("#paymentRef");
+        const paymentRef = referenceInput ? referenceInput.value.trim() : "";
+        if (paymentMethod !== "cod" && !EWALLET_REF_RE.test(paymentRef)) {
+          errors.paymentRef = "Enter the reference number (6-24 letters or digits)";
+        }
+
+        showFieldErrors(document, errors);
+        if (Object.keys(errors).length) {
+          toast("Please check the highlighted fields.");
+          return;
+        }
+
+        await withBusy(placeOrderButton, "Placing order...", async () => {
+          try {
+            if (saveNewAddress) {
+              try {
+                state.addresses = await api.saveAddress(address, null);
+              } catch (error) {
+                console.error(error); // the order still goes through
+              }
+            }
+            const items = cartEntries().map((entry) => ({
+              productId: entry.product.id,
+              quantity: entry.quantity,
+            }));
+            const order = await api.placeOrder({ items, paymentMethod, paymentRef, address });
+            state.cart = {};
+            persistCart();
+            renderCart();
+            state.justPlaced = order.code;
+            navigate("/order/" + encodeURIComponent(order.code));
+            toast("Order " + order.code + " placed. Thank you!");
+          } catch (error) {
+            reportError(error);
+          }
+        });
+      });
+    }
+
+    async function renderOrders() {
+      if (!state.user) return signInRequired("/orders", "Sign in to see your orders.");
+      let orders = [];
+      try {
+        orders = await api.orders();
+      } catch (error) {
+        reportError(error);
+      }
+      const body = orders.length
+        ? `<div class="order-list">${orders.map((order) => orderCard(order)).join("")}</div>`
+        : emptyState(
+            "No orders yet. Your first one is only a few taps away.",
+            `<a class="btn" href="#/menu">Browse the menu</a>`
+          );
+      return {
+        html: `${pageShell({ eyebrow: "Order history", title: "My orders" })}${body}`,
+      };
+    }
+
+    function orderCard(order) {
+      const items = order.items.map((item) => item.quantity + " × " + item.name).join(", ");
+      const canCancel = order.status === "pending" || order.status === "confirmed";
+      return `
+        <article class="panel">
+          <div class="order-head">
+            <div>
+              <h3 class="mono">${escapeHtml(order.code)}</h3>
+              <p>${escapeHtml(formatDateTime(order.placedAt))} · ${escapeHtml(PAYMENT_LABELS[order.paymentMethod] || order.paymentMethod)}</p>
+            </div>
+            ${statusChip(order.status)}
+          </div>
+          <p class="panel-note">${escapeHtml(items)}</p>
+          <p class="panel-note">Delivering to ${escapeHtml(order.address.recipient)} — ${escapeHtml(order.address.street)}, ${escapeHtml(order.address.city)}</p>
+          <div class="order-foot">
+            <strong>${money(order.total)}</strong>
+            <div class="order-actions">
+              <a class="btn small ghost" href="#/order/${encodeURIComponent(order.code)}">View details</a>
+              <button class="btn small quiet" type="button" data-reorder="${escapeHtml(order.code)}">Reorder</button>
+              ${canCancel ? `<button class="btn small danger" type="button" data-cancel-order="${escapeHtml(order.code)}">Cancel</button>` : ""}
+            </div>
+          </div>
+        </article>`;
+    }
+
+    async function renderOrderDetail(path) {
+      if (!state.user) return signInRequired(path, "Sign in to see this order.");
+      const code = decodeURIComponent(path.replace(/^\/order\//, ""));
+      let order = null;
+      let failure = "";
+      try {
+        order = await api.order(code);
+      } catch (error) {
+        failure = reportError(error);
+      }
+
+      if (!order) {
+        return {
+          html: `
+            ${pageShell({ eyebrow: "Order", title: "Not found" })}
+            <div class="panel">
+              <h2>We could not find that order</h2>
+              <p class="panel-note">${escapeHtml(failure || "Check the order number and try again.")}</p>
+              <a class="btn" href="#/orders">Back to my orders</a>
+            </div>`,
+        };
+      }
+
+      const justPlaced = state.justPlaced === order.code;
+      const canCancel = order.status === "pending" || order.status === "confirmed";
+      const canFixPayment =
+        order.paymentMethod !== "cod" &&
+        order.status !== "delivered" &&
+        order.status !== "cancelled";
+
+      return {
+        html: `
+          ${pageShell({ eyebrow: justPlaced ? "Thank you!" : "Order details", title: order.code })}
+          ${
+            justPlaced
+              ? `<div class="panel">
+                   <h2>Your order is in.</h2>
+                   <div class="notice show">We sent order ${escapeHtml(order.code)} to the kitchen. Follow every step below, or check back in My orders.</div>
+                 </div>`
+              : ""
+          }
+          <div class="row mb-sm">
+            ${canCancel ? `<button class="btn small danger" type="button" data-cancel-order="${escapeHtml(order.code)}">Cancel order</button>` : ""}
+            <button class="btn small quiet" type="button" data-reorder="${escapeHtml(order.code)}">Reorder these items</button>
+            <a class="btn small ghost" href="#/orders">All my orders</a>
+          </div>
+          <div class="layout-2">
+            <div>
+              <div class="panel">
+                <h2>Order status</h2>
+                <p class="panel-note">Last update ${escapeHtml(formatDateTime(order.updatedAt || order.placedAt))}</p>
+                ${orderTimeline(order)}
+              </div>
+              <div class="panel">
+                <h2>Items</h2>
+                <div class="summary-lines">
+                  ${order.items
+                    .map(
+                      (item) => `
+                    <div class="line"><span>${escapeHtml(item.name)}<small>${item.quantity} × ${money(item.unitPrice)}</small></span><strong>${money(item.unitPrice * item.quantity)}</strong></div>`
+                    )
+                    .join("")}
+                </div>
+                <div class="summary">
+                  <div class="summary-row"><span>Subtotal</span><strong>${money(order.subtotal)}</strong></div>
+                  <div class="summary-row"><span>Delivery</span><strong>${money(order.deliveryFee)}</strong></div>
+                  <div class="summary-row total"><span>Total</span><strong>${money(order.total)}</strong></div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="panel">
+                <h2>Delivering to</h2>
+                <p class="panel-note">${escapeHtml(order.address.label || "Delivery address")}</p>
+                <div class="summary-lines">
+                  <div class="line"><span>Recipient</span><strong>${escapeHtml(order.address.recipient)}</strong></div>
+                  <div class="line"><span>Mobile</span><strong>${escapeHtml(order.address.phone)}</strong></div>
+                  <div class="line"><span>Address</span><strong>${escapeHtml(order.address.street)}<small>${escapeHtml(order.address.city)}</small></strong></div>
+                </div>
+                ${order.address.notes ? `<p class="panel-note mt-sm">${escapeHtml(order.address.notes)}</p>` : ""}
+              </div>
+              <div class="panel">
+                <h2>Payment</h2>
+                <div class="summary-lines">
+                  <div class="line"><span>Method</span><strong>${escapeHtml(PAYMENT_LABELS[order.paymentMethod] || order.paymentMethod)}</strong></div>
+                  <div class="line"><span>Reference</span><strong>${order.paymentRef ? escapeHtml(order.paymentRef) : "—"}</strong></div>
+                  <div class="line"><span>Amount due</span><strong>${money(order.total)}</strong></div>
+                </div>
+                ${
+                  canFixPayment
+                    ? `<form id="paymentForm" class="mt-sm" novalidate>
+                        <div class="field">
+                          <label for="fixRef">Reference number</label>
+                          <input class="input" id="fixRef" name="paymentRef" value="${escapeHtml(order.paymentRef || "")}">
+                          <span class="field-error" data-error="paymentRef"></span>
+                        </div>
+                        <button class="btn small ghost" id="paymentSubmit" type="submit">Update reference</button>
+                      </form>`
+                    : ""
+                }
+              </div>
+              <div class="panel">
+                <h2>Need help?</h2>
+                <p class="panel-note">Call ${escapeHtml(CONFIG.SUPPORT_PHONE)} with order ${escapeHtml(order.code)} and we will sort it out right away.</p>
+                <a class="btn ghost" href="#/help">Help &amp; FAQ</a>
+              </div>
+            </div>
+          </div>`,
+        mount: () => {
+          const form = $("#paymentForm");
+          if (!form) return;
+          form.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            const values = formValues(form);
+            if (!EWALLET_REF_RE.test(values.paymentRef || "")) {
+              showFieldErrors(form, { paymentRef: "Enter 6-24 letters or digits" });
+              return;
+            }
+            await withBusy($("#paymentSubmit"), "Saving...", async () => {
+              try {
+                await api.updatePayment(order.code, {
+                  paymentMethod: order.paymentMethod,
+                  paymentRef: values.paymentRef,
+                });
+                toast("Reference number updated.");
+                void render();
+              } catch (error) {
+                reportError(error);
+              }
+            });
+          });
+        },
+      };
+    }
+
+    function orderTimeline(order) {
+      if (order.status === "cancelled") {
+        return `
+          <ul class="timeline">
+            <li class="current"><span class="dot">×</span><div><h4>Order cancelled</h4><p>This order was cancelled and will not be delivered.</p></div></li>
+          </ul>`;
+      }
+      const currentIndex = ORDER_FLOW.findIndex((step) => step.status === order.status);
+      return `
+        <ul class="timeline">
+          ${ORDER_FLOW.map((step, index) => {
+            const mark = index < currentIndex ? "✓" : index === currentIndex ? "•" : index + 1;
+            const stepClass = index < currentIndex ? "done" : index === currentIndex ? "current" : "";
+            return `<li class="${stepClass}"><span class="dot">${mark}</span><div><h4>${escapeHtml(step.label)}</h4><p>${escapeHtml(step.hint)}</p></div></li>`;
+          }).join("")}
+        </ul>`;
+    }
+
+    async function renderFavorites() {
+      if (!state.user) return signInRequired("/favorites", "Sign in to keep your favorites in sync.");
+      const saved = state.products.filter((product) => state.favorites.has(product.id));
+      const body = saved.length
+        ? `<div class="menu-grid">${saved.map((product) => productCard(product)).join("")}</div>`
+        : emptyState(
+            "No favorites yet. Tap the heart on any dish to save it here.",
+            `<a class="btn" href="#/menu">Browse the menu</a>`
+          );
+      return {
+        html: `${pageShell({ eyebrow: "Your shortlist", title: "Favorites" })}${body}`,
+      };
+    }
+
+    async function renderAddresses() {
+      if (!state.user) return signInRequired("/addresses", "Sign in to save delivery addresses.");
+      let addresses = state.addresses;
+      try {
+        addresses = await api.addresses();
+        state.addresses = addresses;
+      } catch (error) {
+        reportError(error);
+      }
+      const body = addresses.length
+        ? `<div class="addr-grid">${addresses.map((address) => addressCard(address)).join("")}</div>`
+        : emptyState("No saved addresses yet. Add one and it will be ready at checkout.");
+      return {
+        html: `
+          ${pageShell({ eyebrow: "Delivery", title: "Addresses" })}
+          <div class="row mb-sm"><button class="btn" type="button" data-new-address="1">Add an address</button></div>
+          ${body}`,
+      };
+    }
+
+    function addressCard(address) {
+      return `
+        <article class="addr-card${address.isDefault ? " default" : ""}">
+          <h3>${escapeHtml(address.label)}${address.isDefault ? ` <span class="chip">Default</span>` : ""}</h3>
+          <p>${escapeHtml(address.recipient)}<br>${escapeHtml(address.phone)}</p>
+          <p>${escapeHtml(address.street)}<br>${escapeHtml(address.city)}</p>
+          ${address.notes ? `<p class="muted">${escapeHtml(address.notes)}</p>` : ""}
+          <div class="row">
+            ${address.isDefault ? "" : `<button class="btn small ghost" type="button" data-default-address="${address.id}">Make default</button>`}
+            <button class="btn small quiet" type="button" data-edit-address="${address.id}">Edit</button>
+            <button class="btn small danger" type="button" data-delete-address="${address.id}">Delete</button>
+          </div>
+        </article>`;
+    }
+
+    function openAddressModal(address) {
+      const editing = !!address;
+      openModal(`
+        <div class="modal-head">
+          <h2>${editing ? "Edit address" : "New address"}</h2>
+          <button class="close" type="button" data-close="1" aria-label="Close">×</button>
+        </div>
+        <form id="addressForm" novalidate>
+          <div class="field-row">
+            <div class="field"><label for="m-label">Label</label><input class="input" id="m-label" name="label" data-autofocus value="${escapeHtml(address ? address.label : "Home")}"><span class="field-error" data-error="label"></span></div>
+            <div class="field"><label for="m-recipient">Recipient</label><input class="input" id="m-recipient" name="recipient" value="${escapeHtml(address ? address.recipient : "")}"><span class="field-error" data-error="recipient"></span></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label for="m-phone">Mobile number</label><input class="input" id="m-phone" name="phone" inputmode="tel" placeholder="09171234567" value="${escapeHtml(address ? address.phone : "")}"><span class="field-error" data-error="phone"></span></div>
+            <div class="field"><label for="m-city">City</label><input class="input" id="m-city" name="city" value="${escapeHtml(address ? address.city : "")}"><span class="field-error" data-error="city"></span></div>
+          </div>
+          <div class="field"><label for="m-street">Street, building, landmark</label><input class="input" id="m-street" name="street" value="${escapeHtml(address ? address.street : "")}"><span class="field-error" data-error="street"></span></div>
+          <div class="field"><label for="m-notes">Notes</label><textarea class="textarea" id="m-notes" name="notes">${escapeHtml(address ? address.notes || "" : "")}</textarea></div>
+          <label class="radio-row"><input type="checkbox" name="isDefault" ${address && address.isDefault ? "checked" : ""}> Use as my default address</label>
+          <button class="btn wide mt-sm" id="addressSubmit" type="submit">Save address</button>
+        </form>`);
+
+      const form = $("#addressForm");
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const values = formValues(form);
+        const errors = {};
+        if (!values.label) errors.label = "Add a label, e.g. Home";
+        if (!values.recipient) errors.recipient = "Who should we hand the food to?";
+        const phone = (values.phone || "").replace(/[\s-]/g, "");
+        if (!PHONE_RE.test(phone)) errors.phone = "Enter a valid mobile number";
+        if (!values.street) errors.street = "Street and building are required";
+        if (!values.city) errors.city = "City is required";
+        showFieldErrors(form, errors);
+        if (Object.keys(errors).length) return;
+
+        await withBusy($("#addressSubmit"), "Saving...", async () => {
+          try {
+            state.addresses = await api.saveAddress(
+              {
+                label: values.label,
+                recipient: values.recipient,
+                phone,
+                street: values.street,
+                city: values.city,
+                notes: values.notes || "",
+                isDefault: values.isDefault === "on",
+              },
+              address ? address.id : null
+            );
+            closeModal();
+            toast(editing ? "Address updated." : "Address saved.");
+            void render();
+          } catch (error) {
+            reportError(error);
+          }
+        });
+      });
+    }
+
+    function renderHelp() {
+      const faqs = [
+        ["How long does delivery take?", "Most orders arrive in 30–45 minutes. Follow every step in My orders."],
+        ["How much is delivery?", "Flat " + money(CONFIG.DELIVERY_FEE) + " anywhere we deliver in Metro Manila, no matter how big the order."],
+        ["Which payment methods do you accept?", "Cash on delivery, GCash and Maya. For e-wallets, send the exact total and paste the reference number at checkout."],
+        ["Can I cancel my order?", "Yes while it is still pending or confirmed. Once the kitchen starts preparing it, call us and we will do our best."],
+        ["How do I order again?", "Open My orders and tap Reorder, or heart a dish to save it in Favorites and add it from there."],
+        ["Something is wrong with my order.", "Call or email us with your order number and we will fix it right away."],
+      ];
+      return {
+        html: `
+          ${pageShell({ eyebrow: "We are here to help", title: "Help" })}
+          <div class="layout-2">
+            <div class="faq">
+              ${faqs
+                .map(
+                  ([question, answer]) =>
+                    `<details><summary>${escapeHtml(question)}</summary><p>${escapeHtml(answer)}</p></details>`
+                )
+                .join("")}
+            </div>
+            <div>
+              <div class="panel">
+                <h2>Talk to us</h2>
+                <p class="panel-note">Every day, ${escapeHtml(CONFIG.STORE_HOURS)}.</p>
+                <div class="summary-lines">
+                  <div class="line"><span>Phone</span><strong>${escapeHtml(CONFIG.SUPPORT_PHONE)}</strong></div>
+                  <div class="line"><span>Email</span><strong>${escapeHtml(CONFIG.SUPPORT_EMAIL)}</strong></div>
+                  <div class="line"><span>Delivery fee</span><strong>${money(CONFIG.DELIVERY_FEE)} flat</strong></div>
+                </div>
+              </div>
+              <div class="panel">
+                <h2>Delivery area</h2>
+                <p class="panel-note">We deliver across Metro Manila. Outside the area? Message us and we will see what we can do.</p>
+                <a class="btn ghost" href="#/menu">Start an order</a>
+              </div>
+            </div>
+          </div>`,
+      };
+    }
+
+    async function renderProfile() {
+      if (!state.user) return signInRequired("/profile", "Sign in to see your profile.");
+      let orderCount = 0;
+      try {
+        orderCount = (await api.orders()).length;
+      } catch (error) {
+        console.error(error);
+      }
+      return {
+        html: `
+          ${pageShell({ eyebrow: "Your account", title: state.user.name })}
+          <div class="layout-2">
+            <div class="panel">
+              <h2>Account details</h2>
+              <p class="panel-note">${escapeHtml(state.user.email)}</p>
+              <div class="summary-lines">
+                <div class="line"><span>Orders placed</span><strong>${orderCount}</strong></div>
+                <div class="line"><span>Saved addresses</span><strong>${state.addresses.length}</strong></div>
+                <div class="line"><span>Favorites</span><strong>${state.favorites.size}</strong></div>
+              </div>
+              <div class="row mt-sm">
+                <a class="btn ghost" href="#/orders">My orders</a>
+                <a class="btn ghost" href="#/addresses">Addresses</a>
+                <button class="btn quiet" type="button" data-signout="1">Log out</button>
+              </div>
+            </div>
+            <div class="panel">
+              <h2>Your data</h2>
+              <p class="panel-note">${state.online ? "Your orders, favorites and addresses are stored on the QuickCrave server." : "Saved on this device, and synced to the server as soon as it is connected."}</p>
+              <p class="panel-note">Want your account removed? Email ${escapeHtml(CONFIG.SUPPORT_EMAIL)} and we will delete it.</p>
+            </div>
+          </div>`,
+      };
+    }
+
+    /**
+     * One screen for both jobs. We try to sign you in first, and if the email is
+     * new we simply ask for a name and create the account on the same form — no
+     * mode switching, no second page, no "do you have an account?" question.
+     */
+    function renderAuth() {
+      return {
+        html: `
+          ${pageShell({ eyebrow: "One step and you are in", title: "Sign in or create account" })}
+          <div class="auth-wrap">
+            <form class="panel" id="authForm" novalidate>
+              <h2>Your email and a password</h2>
+              <p class="panel-note">Use the email you order with. If you are new, we will set the account up as you go.</p>
+              <div class="field"><label for="email">Email</label><input class="input" id="email" name="email" type="email" autocomplete="email" data-autofocus><span class="field-error" data-error="email"></span></div>
+              <div class="field"><label for="password">Password</label><input class="input" id="password" name="password" type="password" autocomplete="current-password"><span class="field-error" data-error="password"></span></div>
+              <div class="field" id="nameField" hidden>
+                <label for="name">What should we call you?</label>
+                <input class="input" id="name" name="name" autocomplete="name">
+                <span class="field-error" data-error="name"></span>
+              </div>
+              <div class="field-error" data-error="form" role="alert"></div>
+              <button class="btn wide" id="authSubmit" type="submit">Continue</button>
+              <p class="auth-foot" id="authHint"></p>
+            </form>
+          </div>`,
+        mount: mountAuth,
+      };
+    }
+
+    /** Stores the session, then sends the customer where they were headed. */
+    async function startSession(result, greeting) {
+      state.token = result.token;
+      state.user = result.user;
+      try {
+        localStorage.setItem(KEYS.token, state.token);
+      } catch {
+        /* storage unavailable */
+      }
+      writeJson(KEYS.user, state.user);
+      renderIdentity();
+      await loadCustomerData();
+      toast(greeting);
+      const next = state.afterLogin || "/menu";
+      state.afterLogin = "";
+      navigate(next);
+    }
+
+    function mountAuth() {
+      const form = $("#authForm");
+      if (!form) return;
+      const nameField = $("#nameField");
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const values = formValues(form);
+        const email = (values.email || "").trim().toLowerCase();
+        const needsName = !nameField.hidden;
+        const errors = {};
+
+        if (!EMAIL_RE.test(email)) errors.email = "Enter a valid email address";
+        if (!values.password || values.password.length < 8) errors.password = "Use at least 8 characters";
+        if (needsName && !values.name) errors.name = "Tell us your name";
+        showFieldErrors(form, errors);
+        if (Object.keys(errors).length) return;
+
+        await withBusy($("#authSubmit"), "One moment...", async () => {
+          try {
+            if (!needsName) {
+              try {
+                await startSession(await api.login({ email, password: values.password }), "Welcome back!");
+                return;
+              } catch (error) {
+                if (!(error instanceof ApiError) || error.status !== 401) throw error;
+                // New email: ask for a name and finish on the next press.
+                nameField.hidden = false;
+                setText("#authHint", "You are new here — add your name and press Continue again.");
+                showFieldErrors(form, { form: "" });
+                const input = $("#name");
+                if (input) input.focus();
+                return;
+              }
+            }
+            await startSession(
+              await api.register({ name: values.name, email, password: values.password }),
+              "Welcome to QuickCrave, " + values.name + "!"
+            );
+          } catch (error) {
+            if (error instanceof ApiError && error.status === 409) {
+              showFieldErrors(form, {
+                password: "That email already has an account — check the password.",
+              });
+              setText("#authHint", "Forgot the password? Email us and we will reset it for you.");
+              return;
+            }
+            showFieldErrors(form, { form: reportError(error) });
+          }
+        });
+      });
+    }
+
+    function adminKeyPage(message) {
+      return {
+        html: `
+          ${pageShell({ eyebrow: "Owner tools", title: "Store console" })}
+          <div class="auth-wrap">
+            <form class="panel" id="adminForm" novalidate>
+              <h2>Enter the admin key</h2>
+              <p class="panel-note">Set <span class="mono">ADMIN_KEY</span> in the backend <span class="mono">.env</span> file, then paste the same value here.</p>
+              ${state.online ? "" : `<p class="panel-note">Nothing is connected yet, so this lists the orders placed with this device.</p>`}
+              ${message ? `<div class="field-error" role="alert">${escapeHtml(message)}</div>` : ""}
+              <div class="field"><label for="adminKey">Admin key</label><input class="input" id="adminKey" name="adminKey" type="password" data-autofocus><span class="field-error" data-error="adminKey"></span></div>
+              <button class="btn wide" id="adminSubmit" type="submit">Open the console</button>
+            </form>
+          </div>`,
+        mount: () => {
+          const form = $("#adminForm");
+          if (!form) return;
+          form.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            const values = formValues(form);
+            if (!values.adminKey) {
+              showFieldErrors(form, { adminKey: "Enter the admin key" });
+              return;
+            }
+            state.adminKey = values.adminKey;
+            await withBusy($("#adminSubmit"), "Checking...", async () => {
+              try {
+                await api.adminOrders("");
+                toast("Store console unlocked.");
+                void render();
+              } catch (error) {
+                state.adminKey = "";
+                showFieldErrors(form, { adminKey: reportError(error) });
+              }
+            });
+          });
+        },
+      };
+    }
+
+    async function renderAdmin() {
+      if (!state.adminKey) return adminKeyPage("");
+
+      let orders = [];
+      try {
+        orders = await api.adminOrders(state.adminFilter);
+      } catch (error) {
+        if (error instanceof ApiError && error.status === 401) {
+          state.adminKey = "";
+          return adminKeyPage(reportError(error));
+        }
+        reportError(error);
+      }
+
+      const filters = ["", "pending", "confirmed", "preparing", "out_for_delivery", "delivered", "cancelled"];
+      const body = orders.length
+        ? `<div class="order-list">${orders.map((order) => adminOrderCard(order)).join("")}</div>`
+        : emptyState("No orders in this view.");
+
+      return {
+        html: `
+          ${pageShell({ eyebrow: "Owner tools", title: "Store console" })}
+          <section class="toolbar">
+            <p class="subcopy">${orders.length} order(s)${state.adminFilter ? " · " + escapeHtml(STATUS_LABELS[state.adminFilter]) : ""}</p>
+            <div class="filters">
+              ${filters
+                .map(
+                  (filter) =>
+                    `<button class="filter${state.adminFilter === filter ? " active" : ""}" type="button" data-admin-filter="${filter}">${filter ? escapeHtml(STATUS_LABELS[filter]) : "All"}</button>`
+                )
+                .join("")}
+            </div>
+          </section>
+          ${body}`,
+      };
+    }
+
+    function adminOrderCard(order) {
+      const customer = order.customer
+        ? order.customer.name + " · " + order.customer.email + " · " + order.customer.phone
+        : "Unknown customer";
+      return `
+        <article class="panel">
+          <div class="order-head">
+            <div>
+              <h3 class="mono">${escapeHtml(order.code)}</h3>
+              <p>${escapeHtml(formatDateTime(order.placedAt))} · ${escapeHtml(customer)}</p>
+            </div>
+            ${statusChip(order.status)}
+          </div>
+          <p class="panel-note">${escapeHtml(order.items.map((item) => item.quantity + " × " + item.name).join(", "))}</p>
+          <p class="panel-note">${escapeHtml(order.address.street)}, ${escapeHtml(order.address.city)} · ${escapeHtml(PAYMENT_LABELS[order.paymentMethod] || order.paymentMethod)}${order.paymentRef ? " · ref " + escapeHtml(order.paymentRef) : ""}</p>
+          <div class="order-foot">
+            <strong>${money(order.total)}</strong>
+            <select class="input compact" data-admin-status="${escapeHtml(order.code)}" aria-label="Status for order ${escapeHtml(order.code)}">
+              ${["pending", "confirmed", "preparing", "out_for_delivery", "delivered", "cancelled"]
+                .map(
+                  (status) =>
+                    `<option value="${status}"${status === order.status ? " selected" : ""}>${escapeHtml(STATUS_LABELS[status])}</option>`
+                )
+                .join("")}
+            </select>
+          </div>
+        </article>`;
+    }
+
+    function renderNotFound(path) {
+      return {
+        html: `
+          ${pageShell({ eyebrow: "404", title: "Page not found" })}
+          <div class="panel">
+            <h2>We could not find <span class="mono">${escapeHtml(path)}</span></h2>
+            <p class="panel-note">The link may be old, or the page has moved.</p>
+            <div class="row">
+              <a class="btn" href="#/menu">Go to the menu</a>
+              <a class="btn ghost" href="#/home">Go home</a>
+            </div>
+          </div>`,
+      };
+    }
+
+    /* ---------------------------------------------------------- 7. ROUTER */
+    const PAGES = {
+      "/home": renderHome,
+      "/menu": renderMenu,
+      "/checkout": renderCheckout,
+      "/orders": renderOrders,
+      "/favorites": renderFavorites,
+      "/addresses": renderAddresses,
+      "/help": renderHelp,
+      "/profile": renderProfile,
+      "/login": renderAuth,
+      "/signup": renderAuth,
+      "/admin": renderAdmin,
+    };
+
+    const PAGE_TITLES = {
+      "/home": "Home",
+      "/menu": "Our Menu",
+      "/checkout": "Checkout",
+      "/orders": "My orders",
+      "/favorites": "Favorites",
+      "/addresses": "Addresses",
+      "/help": "Help",
+      "/profile": "My profile",
+      "/login": "Sign in",
+      "/signup": "Sign in",
+      "/admin": "Store console",
+    };
+
+    function parseRoute() {
+      const raw = (location.hash || "#/home").replace(/^#/, "");
+      const [path, query = ""] = raw.split("?");
+      return { path: path || "/home", query: new URLSearchParams(query) };
+    }
+
+    function navigate(path, { replace = false } = {}) {
+      const target = "#" + path;
+      if (location.hash === target) {
+        void render();
+        return;
+      }
+      if (replace) location.replace(target);
+      else location.hash = target;
+    }
+
+    function setActiveNav(path) {
+      const group = path.startsWith("/order/") ? "/orders" : path;
+      $$("#nav [data-route]").forEach((button) => {
+        button.classList.toggle("active", button.dataset.route.replace(/^#/, "") === group);
+      });
+    }
+
+    async function render() {
+      const { path, query } = parseRoute();
+      const previous = state.route;
+      state.route = path;
+      state.query = query;
+      if (state.justPlaced && path !== "/order/" + state.justPlaced) state.justPlaced = "";
+
+      setActiveNav(path);
+      $("#sidebar").classList.remove("open");
+
+      const builder = path.startsWith("/order/") ? renderOrderDetail : PAGES[path];
+      let page;
+      try {
+        page = builder ? await builder(path) : renderNotFound(path);
+      } catch (error) {
+        reportError(error);
+        page = {
+          html: `
+            ${pageShell({ eyebrow: "Oops", title: "Something broke" })}
+            <div class="panel">
+              <h2>We could not load this page</h2>
+              <p class="panel-note">${escapeHtml(error && error.message ? error.message : "")}</p>
+              <a class="btn" href="#/menu">Back to the menu</a>
+            </div>`,
+        };
+      }
+
+      $("#view").innerHTML = page.html;
+      if (typeof page.mount === "function") {
+        try {
+          page.mount();
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
+      renderCart();
+      renderIdentity();
+      document.title =
+        (path.startsWith("/order/") ? "Order " + path.replace("/order/", "") : PAGE_TITLES[path] || "QuickCrave") +
+        " — QuickCrave";
+
+      if (previous !== path) window.scrollTo(0, 0);
+    }
+
+    /* ------------------------------------------------------------ 8. BOOT */
+    async function loadCustomerData() {
+      if (!state.user) {
+        state.favorites = new Set();
+        state.addresses = [];
+        return;
+      }
+      try {
+        state.favorites = new Set(await api.favorites());
+      } catch (error) {
+        console.error(error);
+      }
+      try {
+        state.addresses = await api.addresses();
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    async function handleDeleteAddress(id) {
+      if (!window.confirm("Delete this address?")) return;
+      try {
+        state.addresses = await api.deleteAddress(id);
+        toast("Address deleted.");
+        void render();
+      } catch (error) {
+        reportError(error);
+      }
+    }
+
+    async function handleDefaultAddress(id) {
+      try {
+        state.addresses = await api.setDefaultAddress(id);
+        toast("Default address updated.");
+        void render();
+      } catch (error) {
+        reportError(error);
+      }
+    }
+
+    async function handleAdminStatus(code, status) {
+      try {
+        await api.adminSetStatus(code, status);
+        toast(code + " is now " + (STATUS_LABELS[status] || status) + ".");
+        void render();
+      } catch (error) {
+        reportError(error);
+      }
+    }
+
+    function bindShell() {
+      $("#cartOverlay").addEventListener("click", (event) => {
+        if (event.target.id === "cartOverlay") openCart(false);
+      });
+      $("#modalOverlay").addEventListener("click", (event) => {
+        if (event.target.id === "modalOverlay") closeModal();
+      });
+
+      document.addEventListener("click", (event) => {
+        const closest = (selector) => event.target.closest(selector);
+
+        if (closest("[data-close]")) {
+          closeModal();
+          return;
+        }
+        if (closest("#cartButton")) {
+          openCart(true);
+          return;
+        }
+        if (closest("#closeCart")) {
+          openCart(false);
+          return;
+        }
+        if (closest("#mobileMenu")) {
+          $("#sidebar").classList.toggle("open");
+          return;
+        }
+        if (closest("#checkout")) {
+          if (!state.user) {
+            state.afterLogin = "/checkout";
+            navigate("/login");
+          } else {
+            openCart(false);
+            navigate("/checkout");
+          }
+          return;
+        }
+        if (closest("#profileButton")) {
+          navigate(state.user ? "/profile" : "/login");
+          return;
+        }
+        if (closest("#logoutButton")) {
+          if (state.user) signOut();
+          else navigate("/login");
+          return;
+        }
+
+        const plus = closest("[data-plus]");
+        if (plus) {
+          changeQuantity(plus.dataset.plus, 1);
+          return;
+        }
+        const minus = closest("[data-minus]");
+        if (minus) {
+          changeQuantity(minus.dataset.minus, -1);
+          return;
+        }
+        const add = closest("[data-add]");
+        if (add) {
+          addToCart(add.dataset.add);
+          return;
+        }
+        const favorite = closest("[data-favorite]");
+        if (favorite) {
+          void handleFavoriteClick(favorite.dataset.favorite);
+          return;
+        }
+
+        const go = closest("[data-go]");
+        if (go) {
+          if (go.dataset.after) state.afterLogin = go.dataset.after;
+          navigate(go.dataset.go);
+          return;
+        }
+        const shellRoute = closest("[data-route]");
+        if (shellRoute) {
+          navigate(shellRoute.dataset.route.replace(/^#/, ""));
+          return;
+        }
+        const link = closest('a[href^="#/"]');
+        if (link) {
+          $("#sidebar").classList.remove("open");
+          return; // let the browser update the hash and fire hashchange
+        }
+
+        if (closest("[data-signout]")) {
+          signOut();
+          return;
+        }
+        const cancelOrder = closest("[data-cancel-order]");
+        if (cancelOrder) {
+          void handleCancelOrder(cancelOrder.dataset.cancelOrder);
+          return;
+        }
+        const reorder = closest("[data-reorder]");
+        if (reorder) {
+          void handleReorder(reorder.dataset.reorder);
+          return;
+        }
+        if (closest("[data-new-address]")) {
+          openAddressModal(null);
+          return;
+        }
+        const editAddress = closest("[data-edit-address]");
+        if (editAddress) {
+          const match = state.addresses.find(
+            (address) => String(address.id) === String(editAddress.dataset.editAddress)
+          );
+          openAddressModal(match || null);
+          return;
+        }
+        const deleteAddress = closest("[data-delete-address]");
+        if (deleteAddress) {
+          void handleDeleteAddress(deleteAddress.dataset.deleteAddress);
+          return;
+        }
+        const defaultAddress = closest("[data-default-address]");
+        if (defaultAddress) {
+          void handleDefaultAddress(defaultAddress.dataset.defaultAddress);
+          return;
+        }
+        const adminFilter = closest("[data-admin-filter]");
+        if (adminFilter) {
+          state.adminFilter = adminFilter.dataset.adminFilter;
+          void render();
+        }
+      });
+
+      document.addEventListener("change", (event) => {
+        const statusSelect = event.target.closest("[data-admin-status]");
+        if (statusSelect) {
+          void handleAdminStatus(statusSelect.dataset.adminStatus, statusSelect.value);
+        }
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key !== "Escape") return;
+        if (isOverlayOpen("#modalOverlay")) closeModal();
+        else if (isOverlayOpen("#cartOverlay")) openCart(false);
+        else $("#sidebar").classList.remove("open");
+      });
+
+      window.addEventListener("hashchange", () => {
+        void render();
+      });
+    }
+
+    async function boot() {
+      renderIdentity();
+      renderCart();
+      bindShell();
+
+      await api.probe();
+      try {
+        state.products = await api.products();
+      } catch (error) {
+        console.error(error);
+      }
+
+      if (state.user) {
+        if (state.online) {
+          try {
+            const user = await api.me();
+            if (user) {
+              state.user = user;
+              writeJson(KEYS.user, user);
+            }
+          } catch (error) {
+            if (error instanceof ApiError && error.status === 401) {
+              state.token = "";
+              state.user = null;
+              removeKey(KEYS.token);
+              removeKey(KEYS.user);
+            }
+          }
+        }
+        await loadCustomerData();
+      }
+
+      if (!location.hash) history.replaceState(null, "", "#/home");
+
+      renderIdentity();
+      renderCart();
+      await render();
+    }
+
+    void boot();
+  </script>
+</body>
+</html>
